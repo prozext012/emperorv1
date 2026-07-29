@@ -380,14 +380,16 @@
         } catch (e) {}
         return getDeviceNameFallback();
     }
-    window.__deviceNamePromise = getDeviceName();
+    window.__deviceNamePromise = Promise.race([
+        getDeviceName(),
+        new Promise(resolve => setTimeout(() => resolve(getDeviceNameFallback()), 3000))
+    ]);
 
     // ================================================================
     // ===== FITUR DATA PENGUNJUNG (sesi masuk/keluar, online, page view) =====
     // ================================================================
-    (async function visitorTracking() {
+    (function visitorTracking() {
         const deviceId = window.__visitorId;
-        const deviceName = await window.__deviceNamePromise;
         // pengunjung baru vs lama: ditandai per-device di HP ini, sekali seumur hidup device tsb
         let isNew = false;
         try {
@@ -400,15 +402,27 @@
         const sessionRef = doc(collection(db, 'visitorSessions'));
         const now = Date.now();
         let sessionSaved = false;
+        // Catat sesi SEGERA pakai deteksi nama HP versi cepat (sinkron), jangan nunggu apa-apa dulu.
+        // Ini penting: kalau nunggu proses deteksi yang lebih akurat (yang kadang lambat/macet di
+        // sebagian browser/webview), pengunjung yang buru-buru pindah halaman (misal langsung checkout
+        // ke WhatsApp) bisa gak sempat kecatet sama sekali.
         setDoc(sessionRef, {
             deviceId,
-            device: deviceName,
+            device: getDeviceNameFallback(),
             masuk: now,
             keluar: null,
             status: 'online',
             lastSeen: now,
             isNew
-        }).then(() => { sessionSaved = true; }).catch(e => console.log('[visitor] gagal catat sesi:', e));
+        }).then(() => {
+            sessionSaved = true;
+            // Setelah sesi tercatat, coba tempel nama HP yang lebih akurat (kalau browsernya dukung)
+            window.__deviceNamePromise.then(name => {
+                if (name && name !== getDeviceNameFallback()) {
+                    updateDoc(sessionRef, { device: name }).catch(() => {});
+                }
+            }).catch(() => {});
+        }).catch(e => console.log('[visitor] gagal catat sesi:', e));
 
         // heartbeat: nandain sesi masih online, tiap 20 detik
         const heartbeatId = setInterval(() => {
