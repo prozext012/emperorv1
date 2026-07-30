@@ -1,6 +1,6 @@
 // ===== FIREBASE (Firestore) — buat notifikasi & testimoni realtime =====
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, addDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, onSnapshot, query, orderBy, doc, setDoc, addDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDztQD-U1k8Oz1Vnw7z3yUKzSzSP0RN1vg",
@@ -13,7 +13,19 @@
     };
 
     const fbApp = initializeApp(firebaseConfig);
-    const db = getFirestore(fbApp);
+    // Penyimpanan offline diaktifkan: setiap tulisan data (termasuk catat pengunjung) langsung
+    // masuk ke penyimpanan lokal HP pengunjung (IndexedDB) dalam hitungan milidetik, baru
+    // dikirim ke server di belakang layar. Ini mencegah data hilang kalau pengunjung buru-buru
+    // pindah halaman / tutup tab sebelum proses kirim ke server sempat selesai.
+    let db;
+    try {
+        db = initializeFirestore(fbApp, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+    } catch (e) {
+        // Fallback kalau browser gak dukung IndexedDB (mode private/incognito ketat, dll)
+        db = initializeFirestore(fbApp, {});
+    }
 
     // ----- Daftar produk didaftarkan otomatis ke Firestore, biar web admin selalu ikut update -----
     const PRODUCT_LIST = [
@@ -414,11 +426,11 @@
 
         const sessionRef = doc(collection(db, 'visitorSessions'));
         const now = Date.now();
-        let sessionSaved = false;
         // Catat sesi SEGERA pakai deteksi nama HP versi cepat (sinkron), jangan nunggu apa-apa dulu.
-        // Ini penting: kalau nunggu proses deteksi yang lebih akurat (yang kadang lambat/macet di
-        // sebagian browser/webview), pengunjung yang buru-buru pindah halaman (misal langsung checkout
-        // ke WhatsApp) bisa gak sempat kecatet sama sekali.
+        // Dengan cache lokal aktif, panggilan setDoc ini langsung tersimpan di HP pengunjung dalam
+        // hitungan milidetik (gak perlu nunggu balasan server) — jadi walau pengunjung buru-buru
+        // pindah halaman (misal langsung checkout ke WhatsApp) atau koneksinya jelek, datanya tetap
+        // aman kesimpan dan otomatis terkirim ke server begitu ada kesempatan.
         setDoc(sessionRef, {
             deviceId,
             device: getDeviceNameFallback(),
@@ -427,30 +439,28 @@
             status: 'online',
             lastSeen: now,
             isNew
-        }).then(() => {
-            sessionSaved = true;
-            // Setelah sesi tercatat, coba tempel nama HP yang lebih akurat (kalau browsernya dukung)
-            window.__deviceNamePromise.then(name => {
-                if (name && name !== getDeviceNameFallback()) {
-                    updateDoc(sessionRef, { device: name }).catch(() => {});
-                }
-            }).catch(() => {});
         }).catch(e => console.log('[visitor] gagal catat sesi:', e));
+
+        // Tempel nama HP yang lebih akurat begitu terdeteksi (gak perlu nunggu konfirmasi server dulu,
+        // cache lokal yang jaga urutan tulisannya)
+        window.__deviceNamePromise.then(name => {
+            if (name && name !== getDeviceNameFallback()) {
+                updateDoc(sessionRef, { device: name }).catch(() => {});
+            }
+        }).catch(() => {});
 
         // heartbeat: nandain sesi masih online, tiap 20 detik
         const heartbeatId = setInterval(() => {
-            if (!sessionSaved) return;
             updateDoc(sessionRef, { status: 'online', lastSeen: Date.now() }).catch(() => {});
         }, 20000);
 
         function markOffline() {
-            if (!sessionSaved) return;
             updateDoc(sessionRef, { status: 'offline', keluar: Date.now(), lastSeen: Date.now() }).catch(() => {});
         }
         window.addEventListener('pagehide', markOffline);
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') markOffline();
-            else if (sessionSaved) updateDoc(sessionRef, { status: 'online', lastSeen: Date.now() }).catch(() => {});
+            else updateDoc(sessionRef, { status: 'online', lastSeen: Date.now() }).catch(() => {});
         });
 
         // ----- Catat halaman/produk yang dibuka (buat statistik "paling sering dibuka") -----
