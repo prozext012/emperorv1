@@ -264,7 +264,8 @@
     };
     const pageLoadTs = Date.now();
     let notifOverlayDone = false;
-    function showNotifOverlayNow() {
+    let notifOverlayTimer = null;
+    function renderNotifOverlayNow() {
         if (notifOverlayDone) { console.log('[notif-overlay] sudah pernah jalan, dilewati'); return; }
         try {
             if (sessionStorage.getItem('notifOverlaySeen')) {
@@ -291,14 +292,26 @@
         console.log('[notif-overlay] tampil:', pesan);
         tryPlayNotifSound(pesan);
     }
+    // Data notifikasi kadang nyampe beberapa kali beruntun pas awal buka web (snapshot pertama
+    // dari koneksi yang belum lengkap/lambat, disusul snapshot berikutnya yang beneran terbaru).
+    // Makanya overlay gak langsung ditampilkan begitu ada data pertama — ditunggu dulu jeda
+    // singkat, dan tiap ada data baru masuk jeda itu di-reset. Yang ditampilkan dijamin data
+    // paling akhir yang diterima, bukan data pertama yang kebetulan lewat duluan. Ada batas atas
+    // total tunggu biar tetap muncul walau notifikasi terus-terusan masuk.
     function scheduleNotifOverlay() {
         if (notifOverlayDone) return;
-        const remaining = Math.max(0, 150 - (Date.now() - pageLoadTs));
-        setTimeout(showNotifOverlayNow, remaining);
+        if (notifOverlayTimer) clearTimeout(notifOverlayTimer);
+        const elapsed = Date.now() - pageLoadTs;
+        const minFirstWait = Math.max(0, 150 - elapsed);
+        const settleDelay = 400;
+        const maxTotalWait = 2500;
+        const wait = Math.min(Math.max(minFirstWait, settleDelay), Math.max(minFirstWait, maxTotalWait - elapsed));
+        notifOverlayTimer = setTimeout(renderNotifOverlayNow, wait);
     }
     window.addEventListener('load', scheduleNotifOverlay);
     // dipanggil lagi tiap data notifikasi terbaru dari Firestore nyampe —
-    // jaga-jaga kalau koneksinya lambat dan data belum ada pas detik pertama tadi.
+    // jaga-jaga kalau koneksinya lambat dan data belum ada pas detik pertama tadi,
+    // atau kalau data yang nyampe duluan ternyata belum yang paling baru.
     window.__onNotifDataReady = scheduleNotifOverlay;
 
     // ----- STATUS (story) — dikontrol dari apk admin, tampil sebagai bingkai avatar di web utama -----

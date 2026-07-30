@@ -267,6 +267,17 @@
     window.productKeyToId = {};
     Object.keys(products).forEach(id => { window.productKeyToId[products[id].key] = id; });
     const productGrid = document.getElementById('productGrid');
+    // Pastikan harga di daftar produk selalu format "Rp X", bukan "Mulai X" —
+    // jaga-jaga kalau data lama (default atau tersimpan di Firestore) masih pakai format lama.
+    function normalizeGridPriceLabel(label) {
+        if (!label) return '';
+        label = String(label).trim();
+        if (/^mulai/i.test(label)) {
+            const rest = label.replace(/^mulai\s*/i, '').trim();
+            return /^rp/i.test(rest) ? rest : ('Rp ' + rest);
+        }
+        return label;
+    }
     function renderProductGrid() {
         if (!productGrid) return;
         const ids = Object.keys(products).sort((a, b) => (products[a].order ?? 999) - (products[b].order ?? 999));
@@ -275,7 +286,7 @@
             const thumb = (p.mainImages && p.mainImages[0]) || '';
             const priceHtml = p.priceOld
                 ? `<span class="product-price-old">${p.priceOld}</span><span class="product-price">${p.price}</span>`
-                : `<span class="product-price">${p.gridPriceLabel || p.price || ''}</span>`;
+                : `<span class="product-price">${normalizeGridPriceLabel(p.gridPriceLabel || p.price || '')}</span>`;
             return `
                 <div class="product-card" data-product="${id}">
                     <img src="${thumb}" alt="${p.name}" loading="lazy" decoding="async" />
@@ -791,6 +802,11 @@
     function formatRp(n) {
         return 'Rp ' + n.toLocaleString('id-ID');
     }
+    // Ambil angka murni dari harga produk yang formatnya string "Rp X.XXX" (bisa berubah-ubah
+    // sesuai yang diedit admin), biar gak ada harga yang ke-hardcode dan ketinggalan pas diedit.
+    function parseRpToNumber(str) {
+        return Number(String(str || '').replace(/[^\d]/g, '')) || 0;
+    }
 
     function openAddonSheet() {
         const data = products[1];
@@ -801,7 +817,7 @@
         addonCardName.textContent = addon.name;
         addonCardDesc.textContent = addon.desc;
         addonCardPrice.textContent = '+' + addon.priceLabel;
-        const basePrice = 500;
+        const basePrice = parseRpToNumber(data.price);
         addonTotalValue.textContent = formatRp(basePrice);
         btnLanjutkanAddon.textContent = `Lanjutkan • ${formatRp(basePrice)}`;
         addonSheetView.style.display = '';
@@ -822,7 +838,8 @@
         addonCard.classList.toggle('selected', addonSelected);
         const data = products[1];
         const addon = data.addon;
-        const total = addonSelected ? addon.priceCombo : 500;
+        const basePrice = parseRpToNumber(data.price);
+        const total = addonSelected ? addon.priceCombo : basePrice;
         addonTotalValue.textContent = formatRp(total);
         btnLanjutkanAddon.textContent = `Lanjutkan • ${formatRp(total)}`;
     });
