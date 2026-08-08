@@ -9,7 +9,34 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="google-site-verification" content="FuXtRlDmVQ9IEvEFIk6jXxBwI6wVLH-sWnXPq3PyzO8" />
-    <title>Andika - Toko Online</title>
+    <title>Andika Store</title>
+    <meta name="description" content="dixz-vip.vercel.app adalah toko online yang dibuat dan dikelola oleh Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2000+ ebook digital premium." />
+    <meta name="keywords" content="Andika, Andika Store, dixz vip, dixz, followers tiktok murah, followers instagram murah, widget jam tecno, 2000 e-book digital murah" />
+
+    <!-- Favicon (nilai awal, otomatis di-update lewat script mengikuti foto profil) -->
+    <link rel="icon" id="dynamicFavicon" href="https://i.ibb.co.com/0p557jrm/AIRetouch-20260711-091531075.png" type="image/png" />
+
+    <!-- Schema markup: bantu Google mengenali brand "Andika Store" / "dixz-vip" / "Andika" sebagai entitas yang sama -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "OnlineStore",
+        "name": "Andika Store",
+        "alternateName": ["dixz-vip", "dixz", "Andika"],
+        "url": "https://dixz-vip.vercel.app",
+        "description": "Toko online yang dibuat dan dikelola oleh Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2000+ ebook digital premium.",
+        "founder": {
+            "@type": "Person",
+            "name": "Andika"
+        },
+        "makesOffer": [
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Followers Instagram" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Followers TikTok" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "APK Widget Jam" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "2.000+ Buku Digital Premium" } }
+        ]
+    }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -406,6 +433,32 @@
 <script type="module" src="firabase.js"></script>
 
 <script src="script.js"></script>
+
+<!-- ===== FAVICON OTOMATIS (ikut foto profil) ===== -->
+<script>
+(function () {
+    const avatarImg = document.getElementById('profileAvatarImg');
+    const faviconLink = document.getElementById('dynamicFavicon');
+    if (!avatarImg || !faviconLink) return;
+
+    function syncFavicon() {
+        if (avatarImg.src) {
+            faviconLink.href = avatarImg.src;
+        }
+    }
+
+    // Set favicon pas pertama kali foto sudah termuat
+    if (avatarImg.complete) {
+        syncFavicon();
+    } else {
+        avatarImg.addEventListener('load', syncFavicon, { once: true });
+    }
+
+    // Pantau kalau src foto profil berubah (misal setelah update dari web admin)
+    const observer = new MutationObserver(syncFavicon);
+    observer.observe(avatarImg, { attributes: true, attributeFilter: ['src'] });
+})();
+</script>
 
 </body>
 </html>
