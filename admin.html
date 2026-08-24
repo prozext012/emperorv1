@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#0f0d1a" />
+<link rel="manifest" id="pwaManifestLink" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="dixzpays-vip" />
+<title>Admin - Notifikasi & Testimoni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    :root {
+        --bg-base: #f5f5f8; --light: #ffffff; --dark: #16132a;
+        --primary: #7c3aed; --primary-dark: #5b21b6; --primary-soft: #f2ebfe;
+        --green: #10b981; --soft-red: #ef4444;
+        --border: #ecebf2; --ink-soft: #837f95; --ink-faint: #b3aec2;
+        --shadow-sm: 0 2px 8px rgba(22,19,42,0.05);
+        --shadow-md: 0 10px 28px rgba(22,19,42,0.08);
+        --shadow-lg: 0 18px 46px rgba(22,19,42,0.14);
+        --r-lg: 22px; --r-md: 16px; --r-sm: 11px;
+    }
+    html { -webkit-font-smoothing: antialiased; }
+    body {
+        background: var(--bg-base); font-family: 'Inter', sans-serif; min-height: 100vh;
+        padding: 22px 16px 118px; color: var(--dark);
+        background-image: radial-gradient(circle at 12% 0%, rgba(124,58,237,0.07), transparent 45%);
+        background-attachment: fixed;
+    }
+    .container { max-width: 480px; margin: 0 auto; }
+
+    /* ===== HEADER ===== */
+    h1 {
+        font-size: 1.22rem; font-weight: 800; color: var(--dark); margin-bottom: 22px;
+        display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em;
+    }
+    h1 .h-icon {
+        width: 38px; height: 38px; border-radius: 12px; background: var(--dark);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    h1 .h-icon svg { width: 19px; height: 19px; fill: #fff; }
+    .page-sub { font-size: 0.76rem; color: var(--ink-soft); font-weight: 500; margin: -14px 0 20px 48px; }
+
+    .section-label {
+        font-size: 0.68rem; font-weight: 800; color: var(--ink-faint); text-transform: uppercase;
+        letter-spacing: 0.08em; margin: 26px 2px 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+    .section-label .cnt {
+        background: var(--primary-soft); color: var(--primary-dark); font-weight: 800; font-size: 0.65rem;
+        padding: 1px 8px; border-radius: 20px; letter-spacing: 0;
+    }
+
+    .tab-page { display: none; }
+    .tab-page.active { display: block; }
+
+    /* ===== CARD ===== */
+    .card {
+        background: var(--light); border: 1px solid var(--border); border-radius: var(--r-lg);
+        padding: 18px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+    }
+    .card h2 {
+        font-size: 0.92rem; font-weight: 800; color: var(--dark); margin-bottom: 14px;
+        display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .card h2 svg { width: 15px; height: 15px; fill: var(--primary); flex-shrink: 0; }
+
+    label { display: block; font-size: 0.72rem; font-weight: 700; color: var(--ink-soft); margin: 12px 0 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+    label:first-of-type { margin-top: 0; }
+    input[type="text"], textarea, select, input[type="number"] {
+        width: 100%; padding: 12px 13px; border: 1.5px solid var(--border); border-radius: var(--r-sm);
+        font-family: 'Inter', sans-serif; font-size: 0.86rem; background: var(--bg-base); color: var(--dark);
+        transition: border-color .15s, background .15s;
+    }
+    input[type="text"]:focus, textarea:focus, select:focus, input[type="number"]:focus {
+        outline: none; border-color: var(--primary); background: var(--light);
+    }
+    textarea { min-height: 84px; resize: vertical; line-height: 1.45; }
+    input[type="file"] {
+        width: 100%; font-size: 0.74rem; margin-top: 4px; color: var(--ink-soft);
+        padding: 9px; border: 1.5px dashed var(--border); border-radius: var(--r-sm); background: var(--bg-base);
+    }
+    .preview-img { width: 100%; max-height: 180px; object-fit: contain; margin-top: 10px; border-radius: var(--r-sm); display: none; background: #eee; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+        margin-top: 14px; width: 100%; padding: 13px; border-radius: 13px; border: none;
+        background: var(--dark); color: #ffffff; font-weight: 700; font-size: 0.86rem;
+        cursor: pointer; box-shadow: var(--shadow-sm); font-family: 'Inter', sans-serif;
+        transition: transform .12s, box-shadow .12s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn.secondary { background: var(--light); color: var(--dark); border: 1.5px solid var(--border); box-shadow: none; }
+    .btn.small { padding: 8px 12px; font-size: 0.7rem; margin-top: 0; width: auto; box-shadow: none; border: 1.5px solid var(--border); }
+    .btn.small.secondary { background: var(--light); }
+    .btn.danger { background: #fdecec; color: var(--soft-red); border: 1.5px solid #fbd7d7; box-shadow: none; }
+    .action-row { display: flex; gap: 10px; }
+    .action-row .btn { margin-top: 0; }
+
+    /* ===== RIWAYAT ===== */
+    .riwayat-item {
+        border: 1px solid var(--border); border-radius: var(--r-md); padding: 13px; margin-bottom: 10px; background: var(--light);
+        box-shadow: var(--shadow-sm);
+    }
+    .riwayat-item img { width: 100%; max-height: 140px; object-fit: contain; border-radius: var(--r-sm); margin-bottom: 8px; background: #eee; }
+    .riwayat-text { font-size: 0.82rem; color: var(--dark); margin-bottom: 6px; white-space: pre-wrap; line-height: 1.4; }
+    .riwayat-meta { font-size: 0.68rem; color: var(--ink-faint); margin-bottom: 10px; font-weight: 600; }
+    .riwayat-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ===== BOTTOM NAV (floating pill) ===== */
+    .bottom-nav {
+        position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px;
+        background: var(--dark); border-radius: 999px; display: flex; align-items: center;
+        gap: 2px; padding: 7px; box-shadow: var(--shadow-lg); z-index: 50;
+        width: calc(100% - 32px); max-width: 448px;
+    }
+    .nav-btn {
+        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+        font-size: 0.56rem; font-weight: 700; color: rgba(255,255,255,0.45); cursor: pointer;
+        padding: 9px 2px; border-radius: 999px; position: relative; transition: color .15s, background .15s;
+        white-space: nowrap;
+    }
+    .nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .nav-btn.active { color: #fff; background: var(--primary); }
+    .img-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .img-thumbs .thumb-wrap { position: relative; width: 68px; height: 68px; }
+    .img-thumbs img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+    .img-thumbs .thumb-del {
+        position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%;
+        background: var(--soft-red); color: #fff; border: 2px solid var(--light); font-size: 0.65rem;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .desc-block { border: 1px solid var(--border); border-radius: var(--r-sm); padding: 10px; margin-bottom: 8px; background: var(--bg-base); }
+    .follower-row { border: 1px solid var(--border); border-radius: var(--r-md); padding: 12px; margin-bottom: 10px; background: var(--bg-base); }
+    .follower-row-title { font-size: 0.8rem; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+    .follower-row-fields { display: flex; gap: 10px; align-items: flex-start; }
+    .follower-row-fields > div { flex: 1; min-width: 0; }
+    .follower-row .preview-img { max-height: 90px; }
+    .desc-block-label { font-size: 0.62rem; font-weight: 800; color: var(--ink-faint); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .desc-block textarea, .desc-block input[type="text"] { margin-top: 4px; }
+    .desc-block-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    /* ===== SUB-TAB SWITCHER (dalam 1 halaman) ===== */
+    .subtab-switch {
+        display: flex; background: var(--bg-base); border: 1.5px solid var(--border); border-radius: 999px;
+        padding: 4px; margin-bottom: 18px; gap: 4px;
+    }
+    .subtab-btn {
+        flex: 1; border: none; background: transparent; padding: 10px 8px; border-radius: 999px;
+        font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.76rem; color: var(--ink-soft); cursor: pointer;
+    }
+    .subtab-btn.active { background: var(--dark); color: #fff; box-shadow: var(--shadow-sm); }
+    .subtab-section { display: none; }
+    .subtab-section.active { display: block; }
+
+    /* ===== SEARCH INPUT ===== */
+    .search-input { margin-bottom: 14px; }
+
+    /* ===== PRODUK: GRID 2 KOLOM ===== */
+    #produkList { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    #produkList .empty-state { grid-column: 1 / -1; }
+    .produk-item {
+        display: grid; grid-template-columns: 1fr 1fr; align-items: stretch;
+        border: 1px solid var(--border); border-radius: var(--r-md); padding: 0; overflow: hidden;
+        background: var(--light); box-shadow: var(--shadow-sm); cursor: pointer;
+    }
+    .produk-item > img { grid-column: 1 / -1; width: 100%; height: 116px; object-fit: cover; border-radius: 0; border: none; background: var(--bg-base); }
+    .produk-item-info { grid-column: 1 / -1; padding: 10px 10px 12px; min-width: 0; }
+    .produk-item-info .nm { font-weight: 700; font-size: 0.8rem; color: var(--dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .produk-item-info .pr { font-size: 0.7rem; color: var(--primary-dark); font-weight: 700; margin-top: 3px; }
+    .produk-item > button.btn.small {
+        display: none; margin: 0; border-radius: 0; width: 100%; justify-content: center; align-items: center; padding: 10px 4px;
+        border-left: none; border-right: none; border-bottom: none;
+    }
+    .produk-item.show-actions > button.btn.small { display: flex; }
+    .produk-item > button.btn.small:first-of-type { border-right: 1px solid var(--border) !important; }
+    .empty-state { text-align: center; color: var(--ink-faint); font-size: 0.8rem; padding: 26px 0; font-weight: 600; }
+
+    .notif-header-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 22px; }
+    .notif-header-row h1 { margin-bottom: 0; }
+    .status-toggle { display: flex; border: 1.5px solid var(--border); border-radius: 999px; overflow: hidden; flex-shrink: 0; background: var(--light); }
+    .status-btn {
+        border: none; background: transparent; color: var(--ink-faint); font-family: 'Inter', sans-serif;
+        font-size: 0.68rem; font-weight: 800; padding: 8px 13px; cursor: pointer; border-radius: 999px;
+    }
+    .status-btn.active[data-val="true"] { background: var(--green); color: #fff; }
+    .status-btn.active[data-val="false"] { background: var(--soft-red); color: #fff; }
+
+    /* ===== STATUS COMPOSER ===== */
+    .status-add-btn {
+        width: 100%; padding: 13px; border: 1.5px dashed var(--primary); border-radius: var(--r-md);
+        background: var(--primary-soft); color: var(--primary-dark); font-weight: 800; font-size: 0.85rem;
+        cursor: pointer; font-family: 'Inter', sans-serif;
+    }
+    .status-thumbs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .status-thumb { position: relative; width: 72px; height: 72px; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); background: #222; }
+    .status-thumb img, .status-thumb video { width: 100%; height: 100%; object-fit: cover; }
+    .status-thumb.is-text { display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.6rem; font-weight: 700; text-align: center; padding: 4px; }
+    .status-thumb-del {
+        position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%;
+        background: var(--soft-red); color: #fff; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .status-thumb-badge {
+        position: absolute; bottom: 3px; left: 3px; background: rgba(0,0,0,0.55); color: #fff;
+        font-size: 0.55rem; padding: 1px 5px; border-radius: 6px; font-weight: 700;
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0; background: rgba(15,13,26,0.6); backdrop-filter: blur(2px);
+        z-index: 500; align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+        background: var(--light); width: 100%; max-width: 480px; border-radius: 24px 24px 0 0;
+        padding: 22px 20px max(20px, env(safe-area-inset-bottom)); max-height: 88vh; overflow-y: auto;
+    }
+    .modal-box h2 { font-size: 1.05rem; font-weight: 800; color: var(--dark); margin-bottom: 16px; }
+    .modal-pick-btn {
+        width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: var(--r-md);
+        cursor: pointer; margin-bottom: 10px; text-align: left; font-family: 'Inter', sans-serif;
+        display: flex; align-items: center; gap: 12px; background: var(--bg-base); color: var(--dark); font-weight: 700; font-size: 0.85rem;
+    }
+    .modal-pick-btn svg { width: 18px; height: 18px; fill: var(--primary); flex-shrink: 0; }
+    .modal-pick-btn.cancel { background: transparent; border-style: dashed; text-align: center; justify-content: center; color: var(--ink-soft); }
+    .status-preview-media { width: 100%; border-radius: var(--r-md); overflow: hidden; margin-bottom: 12px; background: #111; display: flex; align-items: center; justify-content: center; min-height: 180px; }
+    .status-preview-media img, .status-preview-media video { width: 100%; max-height: 360px; object-fit: contain; }
+    .status-text-editor {
+        width: 100%; min-height: 220px; border-radius: var(--r-md); margin-bottom: 12px;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .status-text-editor textarea {
+        width: 100%; background: transparent; border: none; color: #fff; font-weight: 700;
+        font-size: 1.2rem; text-align: center; resize: none; min-height: 140px;
+    }
+    .status-text-editor textarea:focus { border: none; }
+    .status-text-editor textarea::placeholder { color: rgba(255,255,255,0.7); }
+    .status-template-row { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .status-template-dot { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; border: 3px solid transparent; cursor: pointer; }
+    .status-template-dot.selected { border-color: var(--dark); }
+    .status-upload-progress { font-size: 0.75rem; color: var(--ink-soft); margin-top: 10px; display: none; text-align: center; font-weight: 600; }
+
+    /* ===== HALAMAN PESAN ===== */
+    #pagePesan { padding: 0; }
+    .pesan-list-view h1 { margin-bottom: 16px; }
+    .chat-contact-item {
+        display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 8px;
+        border-radius: var(--r-md); background: var(--light); border: 1px solid var(--border); cursor: pointer; box-shadow: var(--shadow-sm);
+    }
+    .chat-contact-avatar {
+        width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0; background: var(--primary-soft);
+        display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .chat-contact-avatar svg { width: 26px; height: 26px; fill: var(--primary); }
+    .chat-contact-info { flex: 1; min-width: 0; }
+    .chat-contact-name { font-weight: 700; font-size: 0.87rem; color: var(--dark); }
+    .chat-contact-preview { font-size: 0.76rem; color: var(--ink-soft); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-contact-time { font-size: 0.64rem; color: var(--ink-faint); flex-shrink: 0; font-weight: 600; }
+    .chat-contact-unread {
+        min-width: 18px; height: 18px; border-radius: 9px; background: var(--green); color: #fff;
+        font-size: 0.6rem; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 5px;
+    }
+
+    .pesan-thread-view { display: none; flex-direction: column; height: calc(100vh - 22px - 96px); }
+    .pesan-thread-view.active { display: flex; }
+    .pesan-thread-header {
+        display: flex; align-items: center; gap: 10px; padding-bottom: 14px;
+        border-bottom: 1px solid var(--border); margin-bottom: 14px;
+    }
+    .pesan-thread-back {
+        width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+        font-size: 1.2rem; border-radius: 50%; background: var(--bg-base); flex-shrink: 0;
+    }
+    .pesan-thread-name { font-weight: 800; color: var(--dark); font-size: 0.95rem; }
+    .pesan-thread-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
+    .pesan-bubble-row { display: flex; justify-content: flex-start; }
+    .pesan-bubble {
+        max-width: 75%; width: fit-content; background: var(--light); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px;
+        padding: 9px 13px; font-size: 0.82rem; color: var(--dark); box-shadow: var(--shadow-sm); word-break: break-word;
+    }
+    .pesan-bubble.emoji-only { font-size: 1.6rem; background: transparent; border: none; box-shadow: none; padding: 0; }
+    .pesan-bubble img { width: 100%; max-width: 220px; border-radius: 12px; display: block; }
+    .pesan-bubble audio { width: 220px; max-width: 60vw; }
+    .pesan-bubble-time { font-size: 0.6rem; color: var(--ink-faint); margin-top: 4px; font-weight: 600; }
+
+    /* ===== HALAMAN PENGUNJUNG ===== */
+    .pengunjung-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .pengunjung-notif-btn {
+        position: relative; width: 40px; height: 40px; border-radius: 50%; background: var(--dark);
+        display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+    .pengunjung-notif-btn svg { width: 18px; height: 18px; fill: #fff; }
+    .pengunjung-notif-btn .chat-contact-unread { position: absolute; top: -4px; right: -4px; }
+    .pengunjung-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 16px; }
+    .pengunjung-stat-card {
+        background: var(--light); border: 1px solid var(--border); border-radius: var(--r-md); padding: 13px 8px;
+        box-shadow: var(--shadow-sm); text-align: center;
+    }
+    .pengunjung-stat-card.highlight { background: var(--dark); border-color: var(--dark); grid-column: span 3; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
+    .pengunjung-stat-card.highlight .pengunjung-stat-num,
+    .pengunjung-stat-card.highlight .pengunjung-stat-label { color: #fff; }
+    .pengunjung-stat-card.highlight .pengunjung-stat-num::before { content: '●'; color: var(--green); font-size: 0.6em; margin-right: 6px; }
+    .pengunjung-stat-num { font-size: 1.25rem; font-weight: 800; color: var(--dark); }
+    .pengunjung-stat-label { font-size: 0.66rem; color: var(--ink-soft); margin-top: 2px; font-weight: 600; }
+    .pengunjung-baru-lama-row { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+    .pengunjung-bar-track { width: 100%; height: 9px; border-radius: 5px; background: var(--bg-base); overflow: hidden; }
+    .pengunjung-bar-fill { height: 100%; background: var(--primary); border-radius: 5px; }
+    .pengunjung-log-item {
+        display: flex; flex-direction: column; gap: 3px; padding: 12px 0;
+        border-bottom: 1px solid var(--border); font-size: 0.8rem; color: var(--dark);
+    }
+    .pengunjung-log-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .pengunjung-log-item:first-child { padding-top: 0; }
+    .pengunjung-log-top { display: flex; align-items: center; gap: 7px; font-weight: 700; }
+    .pengunjung-log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .pengunjung-log-dot.online { background: var(--green); }
+    .pengunjung-log-dot.offline { background: var(--ink-faint); }
+    .pengunjung-log-sub { font-size: 0.72rem; color: var(--ink-soft); }
+    .top-page-item { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; color: var(--dark); }
+    .top-page-item:last-child { border-bottom: none; }
+    .top-page-count { font-weight: 800; color: var(--primary-dark); }
+    .status-view-count { font-size: 0.7rem; color: var(--ink-faint); margin-top: 8px; text-align: center; font-weight: 600; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div class="container">
+
+    <div class="tab-page active" id="pageNotif">
+        <div class="notif-header-row">
+            <h1><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></span>Notifikasi</h1>
+            <div class="status-toggle" id="statusToggle">
+                <button type="button" class="status-btn" data-val="true" id="btnStatusOnline">Online</button>
+                <button type="button" class="status-btn" data-val="false" id="btnStatusOffline">Offline</button>
+            </div>
+        </div>
+
+        <div class="subtab-switch">
+            <button type="button" class="subtab-btn active" data-subtarget="notifSectionV1">Teks Berjalan</button>
+            <button type="button" class="subtab-btn" data-subtarget="notifSectionV2">Notifikasi Utama</button>
+        </div>
+
+        <div class="subtab-section active" id="notifSectionV1">
+            <div class="card">
+                <h2><svg viewBox="0 0 24 24"><path d="M3 10v4h4l5 5V5L7 10H3zm13.5 2c0-1.77-1-3.29-2.5-4.03v8.05c1.5-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>Tambah Pesan Berjalan</h2>
+                <label>Pesan (bisa tambah beberapa, nanti jalan bersambung bergantian)</label>
+                <textarea id="notifV1Input" placeholder="Tulis pesan notifikasi berjalan..."></textarea>
+                <button class="btn" id="btnSubmitNotifV1">Tambah Pesan</button>
+            </div>
+            <div class="section-label">Riwayat</div>
+            <div id="notifV1Riwayat"></div>
+        </div>
+
+        <div class="subtab-section" id="notifSectionV2">
+            <div class="card">
+                <h2><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>Kirim Notifikasi</h2>
+                <label>Gambar (opsional)</label>
+                <input type="file" id="notifImgInput" accept="image/*" />
+                <img class="preview-img" id="notifImgPreview" />
+                <label>Teks deskripsi</label>
+                <textarea id="notifDescInput" placeholder="Tulis isi notifikasi..."></textarea>
+                <button class="btn" id="btnSubmitNotif">Kirim Notifikasi</button>
+            </div>
+            <div class="section-label">Riwayat</div>
+            <div id="notifRiwayat"></div>
+        </div>
+    </div>
+
+    <div class="tab-page" id="pageTesti">
+        <h1><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>Testimoni</h1>
+
+        <div class="card">
+            <h2>Tambah Testimoni</h2>
+            <label>Nama produk</label>
+            <select id="testiProdukInput"></select>
+            <label>Foto transaksi</label>
+            <input type="file" id="testiImgInput" accept="image/*" />
+            <img class="preview-img" id="testiImgPreview" />
+            <label>Bintang (3-5)</label>
+            <input type="number" id="testiStarsInput" min="3" max="5" value="5" />
+            <button class="btn" id="btnSubmitTesti">Kirim Testimoni</button>
+            <button class="btn secondary" id="btnImportLegacy" style="margin-top:8px;">Import Testimoni Lama (sekali saja)</button>
+        </div>
+
+        <div class="section-label">Riwayat Testimoni</div>
+        <div id="testiRiwayat"></div>
+    </div>
+
+    <div class="tab-page" id="pageProduk">
+        <h1><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M12 2 2 7v10l10 5 10-5V7L12 2zm0 2.3L19 8l-7 3.5L5 8l7-3.7zM4 9.6l7 3.5v7.6l-7-3.5V9.6zm9 11.1v-7.6l7-3.5v7.6l-7 3.5z"/></svg></span>Produk</h1>
+
+        <div class="action-row" style="margin-bottom:20px;">
+            <button class="btn secondary" id="btnImportProduk">Import Produk Lama dari File JSON</button>
+            <input type="file" id="importProdukFile" accept="application/json" style="display:none;" />
+            <button class="btn secondary" id="btnMigrasiGambar" style="margin-top:8px;">Migrasi Gambar Lama ke Cloudinary (sekali jalan)</button>
+            <div id="migrasiGambarLog" style="font-size:12px;color:#999;margin-top:6px;white-space:pre-line;"></div>
+            <button class="btn" id="btnProdukBaru">+ Produk Baru</button>
+        </div>
+
+        <div class="section-label">Daftar Produk</div>
+        <input type="text" id="produkSearchInput" class="search-input" placeholder="🔍 Cari produk..." />
+        <div id="produkList"></div>
+
+        <div class="card" id="produkFormCard" style="display:none;">
+            <h2 id="produkFormTitle">Edit Produk</h2>
+
+            <div id="pfJenisWrap" style="display:none;">
+                <label>Jenis produk</label>
+                <select id="pfJenisBaru">
+                    <option value="normal">Produk Biasa (harga tetap, kayak Widget Jam / E-book)</option>
+                    <option value="social">Produk Luar Biasa (harga bertingkat sesuai jumlah, kayak Followers)</option>
+                </select>
+                <div id="pfPlatformWrap" style="display:none;">
+                    <label>Platform</label>
+                    <select id="pfPlatformBaru">
+                        <option value="instagram">Instagram</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Nama produk</label>
+            <input type="text" id="pfNama" />
+            <label>Foto produk (bisa lebih dari satu)</label>
+            <input type="file" id="pfFoto" accept="image/*" multiple />
+            <div class="img-thumbs" id="pfFotoThumbs"></div>
+
+            <label>Mode harga</label>
+            <select id="pfPriceMode">
+                <option value="normal">Harga Biasa</option>
+                <option value="coret">Harga Coret</option>
+            </select>
+            <div id="pfPriceNormalWrap">
+                <label>Harga jual</label>
+                <input type="number" id="pfPriceNormal" />
+            </div>
+            <div id="pfPriceCoretWrap" style="display:none;">
+                <label>Harga asli (dicoret)</label>
+                <input type="number" id="pfPriceOriginal" />
+                <label>Harga jual (setelah diskon)</label>
+                <input type="number" id="pfPriceSale" />
+            </div>
+            <label>Biaya admin (opsional)</label>
+            <input type="number" id="pfAdminFee" value="0" />
+            <label>Foto QRIS pembayaran</label>
+            <input type="file" id="pfQris" accept="image/*" />
+            <img class="preview-img" id="pfQrisPreview" />
+
+            <div id="pfFollowerWrap" style="display:none;">
+                <label style="margin-top:16px;">Harga & QRIS per jumlah followers</label>
+                <div style="font-size:0.72rem;color:var(--ink-soft);margin-bottom:8px;font-weight:500;">Biaya admin otomatis +Rp100 dari harga jual di tiap baris.</div>
+                <div id="pfFollowerRows"></div>
+            </div>
+
+            <label>Deskripsi singkat di kartu produk (halaman utama)</label>
+            <input type="text" id="pfGridDesc" />
+
+            <label style="margin-top:16px;">Deskripsi lengkap</label>
+            <div id="pfDescBlocks"></div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                <button class="btn small secondary" data-addblock="heading">+ Judul</button>
+                <button class="btn small secondary" data-addblock="paragraph">+ Paragraf</button>
+                <button class="btn small secondary" data-addblock="list">+ Poin-poin</button>
+                <button class="btn small secondary" data-addblock="divider">+ Garis</button>
+                <button class="btn small secondary" data-addblock="image">+ Foto</button>
+            </div>
+
+            <label style="margin-top:16px;display:flex;align-items:center;gap:8px;text-transform:none;font-size:0.8rem;">
+                <input type="checkbox" id="pfHasAddon" style="width:auto;" /> Produk ini punya produk tambahan?
+            </label>
+            <div id="pfAddonWrap" style="display:none;">
+                <label>Nama produk tambahan</label>
+                <input type="text" id="pfAddonNama" />
+                <label>Foto produk tambahan</label>
+                <input type="file" id="pfAddonFoto" accept="image/*" multiple />
+                <div class="img-thumbs" id="pfAddonFotoThumbs"></div>
+                <label>Deskripsi singkat tambahan</label>
+                <input type="text" id="pfAddonDesc" />
+                <label>Harga produk tambahan (kalau beli sendiri)</label>
+                <input type="number" id="pfAddonPrice" />
+                <label>Harga total kalau beli sepaket (produk utama + tambahan)</label>
+                <input type="number" id="pfAddonComboPrice" />
+                <label>Biaya admin sepaket (biaya admin combo, terpisah dari biaya admin produk utama)</label>
+                <input type="number" id="pfAddonAdminFee" value="0" />
+                <label>Foto QRIS sepaket</label>
+                <input type="file" id="pfAddonQris" accept="image/*" />
+                <img class="preview-img" id="pfAddonQrisPreview" />
+            </div>
+
+            <button class="btn" id="btnSimpanProduk" style="margin-top:18px;">Simpan Produk</button>
+            <button class="btn secondary" id="btnBatalProduk" style="margin-top:8px;">Batal</button>
+        </div>
+    </div>
+
+    <div class="tab-page" id="pagePesan">
+        <div class="pesan-list-view" id="pesanListView">
+            <h1><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg></span>Pesan Masuk</h1>
+            <input type="text" id="pesanSearchInput" class="search-input" placeholder="🔍 Cari kontak..." />
+            <div id="chatContactList"></div>
+            <div class="empty-state" id="chatEmptyState" style="display:none">Belum ada pesan masuk.</div>
+        </div>
+        <div class="pesan-thread-view" id="pesanThreadView">
+            <div class="pesan-thread-header">
+                <div class="pesan-thread-back" id="btnBackThread">‹</div>
+                <div class="chat-contact-avatar" style="width:38px;height:38px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                </div>
+                <div class="pesan-thread-name" id="pesanThreadName"></div>
+            </div>
+            <div class="pesan-thread-body" id="pesanThreadBody"></div>
+        </div>
+    </div>
+
+    <div class="tab-page" id="pageProfil">
+        <h1><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg></span>Profil</h1>
+
+        <div class="subtab-switch">
+            <button type="button" class="subtab-btn active" data-subtarget="profilSectionStatus">Status</button>
+            <button type="button" class="subtab-btn" data-subtarget="profilSectionData">Data Profil</button>
+        </div>
+
+        <div class="subtab-section active" id="profilSectionStatus">
+            <div class="card">
+                <button class="status-add-btn" id="btnAddStatus">+ Tambah Status</button>
+                <div class="status-thumbs" id="statusActiveList"></div>
+            </div>
+        </div>
+
+        <div class="subtab-section" id="profilSectionData">
+            <div class="card">
+                <label>Foto profil</label>
+                <input type="file" id="profilAvatarInput" accept="image/*" />
+                <img class="preview-img" id="profilAvatarPreview" />
+                <label>Banner</label>
+                <input type="file" id="profilBannerInput" accept="image/*" />
+                <img class="preview-img" id="profilBannerPreview" />
+                <label>Nama</label>
+                <input type="text" id="profilNamaInput" placeholder="Nama" />
+                <label>Bio</label>
+                <textarea id="profilBioInput" placeholder="Bio..."></textarea>
+                <button class="btn" id="btnSubmitProfil">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-page" id="pagePengunjung">
+        <div class="pengunjung-list-view" id="pengunjungListView">
+            <div class="pengunjung-top-row">
+                <h1 style="margin:0;"><span class="h-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span>Pengunjung</h1>
+                <div class="pengunjung-notif-btn" id="btnPengunjungNotif">
+                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                    <span class="chat-contact-unread" id="pengunjungNotifBadge" style="display:none;"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Grafik Kunjungan (14 hari terakhir)</h2>
+                <canvas id="pengunjungChart" height="180"></canvas>
+            </div>
+
+            <div class="pengunjung-stat-grid">
+                <div class="pengunjung-stat-card highlight"><div class="pengunjung-stat-num" id="statOnlineNow">0</div><div class="pengunjung-stat-label">Sedang online</div></div>
+                <div class="pengunjung-stat-card"><div class="pengunjung-stat-num" id="statHariIni">0</div><div class="pengunjung-stat-label">Hari ini</div></div>
+                <div class="pengunjung-stat-card"><div class="pengunjung-stat-num" id="statMingguIni">0</div><div class="pengunjung-stat-label">Minggu ini</div></div>
+                <div class="pengunjung-stat-card"><div class="pengunjung-stat-num" id="statBulanIni">0</div><div class="pengunjung-stat-label">Bulan ini</div></div>
+                <div class="pengunjung-stat-card"><div class="pengunjung-stat-num" id="statTahunIni">0</div><div class="pengunjung-stat-label">Tahun ini</div></div>
+                <div class="pengunjung-stat-card"><div class="pengunjung-stat-num" id="statSemua">0</div><div class="pengunjung-stat-label">Semua</div></div>
+            </div>
+
+            <div class="card">
+                <h2>Jam Ramai</h2>
+                <canvas id="pengunjungJamChart" height="140"></canvas>
+            </div>
+
+            <div class="card">
+                <h2>Pengunjung Baru vs Lama</h2>
+                <div class="pengunjung-baru-lama-row">
+                    <div><span id="statBaru">0</span> baru</div>
+                    <div><span id="statLama">0</span> lama</div>
+                </div>
+                <div class="pengunjung-bar-track"><div class="pengunjung-bar-fill" id="statBaruBar"></div></div>
+            </div>
+
+            <div class="card">
+                <h2>Halaman Paling Sering Dibuka</h2>
+                <div id="topPagesList"></div>
+            </div>
+
+            <div class="card">
+                <h2>Riwayat Kunjungan Terbaru</h2>
+                <div id="pengunjungLogList"></div>
+            </div>
+        </div>
+
+        <div class="pesan-thread-view" id="pengunjungNotifView">
+            <div class="pesan-thread-header">
+                <div class="pesan-thread-back" id="btnBackPengunjungNotif">‹</div>
+                <div class="pesan-thread-name">Notifikasi Pengunjung</div>
+            </div>
+            <div class="pesan-thread-body" id="pengunjungNotifList"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ===== MODAL: PILIH SUMBER STATUS ===== -->
+<div class="modal-overlay" id="statusPickOverlay">
+    <div class="modal-box">
+        <h2>Tambah Status</h2>
+        <button type="button" class="modal-pick-btn" id="statusPickCamera"><svg viewBox="0 0 24 24"><path d="M9.4 4l-1.8 2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-3.6l-1.8-2H9.4zM12 9a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"/></svg>Kamera</button>
+        <button type="button" class="modal-pick-btn" id="statusPickGallery"><svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>Galeri (Foto / Video)</button>
+        <button type="button" class="modal-pick-btn" id="statusPickText"><svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>Teks</button>
+        <button type="button" class="modal-pick-btn cancel" id="statusPickCancel">Batal</button>
+    </div>
+</div>
+<input type="file" id="statusCameraInput" accept="image/*" capture="environment" style="display:none" />
+<input type="file" id="statusGalleryInput" accept="image/*,video/*" style="display:none" />
+
+<!-- ===== MODAL: PRATINJAU & UPLOAD STATUS ===== -->
+<div class="modal-overlay" id="statusPreviewOverlay">
+    <div class="modal-box">
+        <h2 id="statusPreviewTitle">Pratinjau Status</h2>
+
+        <div class="status-preview-media" id="statusPreviewMediaBox" style="display:none;"></div>
+        <textarea id="statusCaptionInput" class="ig-username-input" style="margin-bottom:12px;" placeholder="Tulis caption (opsional)..."></textarea>
+
+        <div id="statusTextEditorBox" style="display:none;">
+            <div class="status-text-editor" id="statusTextEditorBg">
+                <textarea id="statusTextInput" placeholder="Tulis status kamu..."></textarea>
+            </div>
+            <div class="status-template-row" id="statusTemplateRow"></div>
+        </div>
+
+        <button class="btn" id="btnUploadStatus">Upload Status</button>
+        <button class="btn secondary" id="btnCancelStatusPreview" style="margin-top:8px;">Batal</button>
+        <div class="status-upload-progress" id="statusUploadProgress">Mengunggah...</div>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-btn active" id="navNotif">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+        Notif
+    </div>
+    <div class="nav-btn" id="navTesti">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        Testi
+    </div>
+    <div class="nav-btn" id="navProfil">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        Profil
+    </div>
+    <div class="nav-btn" id="navProduk">
+        <svg viewBox="0 0 24 24"><path d="M12 2 2 7v10l10 5 10-5V7L12 2zm0 2.3L19 8l-7 3.5L5 8l7-3.7zM4 9.6l7 3.5v7.6l-7-3.5V9.6zm9 11.1v-7.6l7-3.5v7.6l-7 3.5z"/></svg>
+        Produk
+    </div>
+    <div class="nav-btn" id="navPesan" style="position:relative;">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+        Pesan
+        <span class="chat-contact-unread" id="pesanNavBadge" style="display:none;position:absolute;top:2px;right:10px;"></span>
+    </div>
+    <div class="nav-btn" id="navPengunjung">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Visitor
+    </div>
+</div>
+
+<script type="module">
+    // ===== PWA: manifest + service worker + ikon, semua inline (1 file) =====
+    (function setupPWA() {
+        function makeIconDataUrl(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size; canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            // background rounded, warna primary tema web
+            const r = size * 0.22;
+            ctx.fillStyle = '#1450a3';
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.arcTo(size, 0, size, size, r);
+            ctx.arcTo(size, size, 0, size, r);
+            ctx.arcTo(0, size, 0, 0, r);
+            ctx.arcTo(0, 0, size, 0, r);
+            ctx.closePath();
+            ctx.fill();
+            // ikon lonceng notifikasi, warna putih di atas navy
+            ctx.fillStyle = '#ffffff';
+            ctx.save();
+            const scale = size / 24;
+            ctx.translate(size * 0.18, size * 0.18);
+            ctx.scale(scale * 0.64, scale * 0.64);
+            const bell = new Path2D('M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z');
+            ctx.fill(bell);
+            ctx.restore();
+            return canvas.toDataURL('image/png');
+        }
+
+        try {
+            const icon192 = makeIconDataUrl(192);
+            const icon512 = makeIconDataUrl(512);
+            const base = location.href.split('#')[0].split('?')[0];
+            const scope = new URL('.', base).href;
+            const manifest = {
+                id: base,
+                name: 'dixzpays-vip',
+                short_name: 'dixzpays-vip',
+                description: 'Panel admin notifikasi & testimoni dixzpays-vip',
+                start_url: base,
+                scope: scope,
+                display: 'standalone',
+                background_color: '#f4f6fb',
+                theme_color: '#1450a3',
+                icons: [
+                    { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+                    { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+                    { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any' },
+                    { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+                ]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+            const link = document.getElementById('pwaManifestLink');
+            link.href = URL.createObjectURL(manifestBlob);
+
+            const linkIcon = document.createElement('link');
+            linkIcon.rel = 'icon';
+            linkIcon.href = icon192;
+            document.head.appendChild(linkIcon);
+            const linkApple = document.createElement('link');
+            linkApple.rel = 'apple-touch-icon';
+            linkApple.href = icon192;
+            document.head.appendChild(linkApple);
+
+            if ('serviceWorker' in navigator) {
+                const swCode = "self.addEventListener('install',e=>self.skipWaiting());" +
+                    "self.addEventListener('activate',e=>self.clients.claim());" +
+                    "self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});";
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                navigator.serviceWorker.register(swUrl).catch(err => console.warn('Service worker gagal didaftarkan:', err));
+            }
+        } catch (err) {
+            console.warn('Setup PWA gagal, web tetap jalan normal:', err);
+        }
+    })();
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import {
+        getFirestore, collection, addDoc, doc, setDoc, updateDoc, deleteDoc,
+        onSnapshot, query, orderBy, getDocs, where, writeBatch, increment, limit
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    // Upload video status pakai Cloudinary (bukan Firebase Storage, karena Storage
+    // di paket Spark/gratis sekarang wajib upgrade ke Blaze dulu buat diaktifkan).
+    const CLOUDINARY_CLOUD_NAME = 'ywdax4aj';
+    const CLOUDINARY_UPLOAD_PRESET = 'statusMedia';
+    async function uploadVideoToCloudinary(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        if (!res.ok) {
+            let errMsg = 'Upload video ke Cloudinary gagal.';
+            try { const errData = await res.json(); if (errData.error && errData.error.message) errMsg = errData.error.message; } catch (e) {}
+            throw new Error(errMsg);
+        }
+        const data = await res.json();
+        return data.secure_url;
+    }
+
+    // Upload gambar (produk, QRIS, testimoni, notifikasi, status, profil) juga ke Cloudinary —
+    // sebelumnya disimpan sebagai base64 langsung di Firestore, bikin dokumen berat & sinkron lambat.
+    async function uploadImageToCloudinary(blob) {
+        const formData = new FormData();
+        formData.append('file', blob);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        if (!res.ok) {
+            let errMsg = 'Upload gambar ke Cloudinary gagal.';
+            try { const errData = await res.json(); if (errData.error && errData.error.message) errMsg = errData.error.message; } catch (e) {}
+            throw new Error(errMsg);
+        }
+        const data = await res.json();
+        return data.secure_url;
+    }
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAYoOQXd-C8Nf11H1u1WJhjxBwchV7Uhwc",
+        authDomain: "dixzstore-bbb02.firebaseapp.com",
+        projectId: "dixzstore-bbb02",
+        storageBucket: "dixzstore-bbb02.firebasestorage.app",
+        messagingSenderId: "30280369252",
+        appId: "1:30280369252:web:9cec081528f736a2284b71"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ===== AUTO-CLEANUP HARIAN (sama seperti di firabase.js sisi web utama) =====
+    // Admin biasanya jarang dibuka dibanding web utama, jadi ini pelengkap aja — cleanup
+    // utama tetap jalan dari kunjungan pengunjung. Data lama dihapus PERMANEN dari Firestore.
+    async function deleteOldDocsAdmin(collectionName, field, cutoff) {
+        try {
+            const snap = await getDocs(query(collection(db, collectionName), where(field, '<', cutoff), limit(400)));
+            if (snap.empty) return;
+            const batch = writeBatch(db);
+            snap.forEach(d => batch.delete(d.ref));
+            await batch.commit();
+        } catch (e) { console.log(`[cleanup] gagal bersihin ${collectionName}:`, e); }
+    }
+    (function scheduleCleanupAdmin() {
+        try {
+            const THROTTLE = 3 * 3600000;
+            const last = Number(localStorage.getItem('lastCleanupRunAdmin') || 0);
+            if (Date.now() - last < THROTTLE) return;
+            localStorage.setItem('lastCleanupRunAdmin', String(Date.now()));
+            const now = Date.now(), H = 3600000;
+            setTimeout(() => {
+                Promise.all([
+                    deleteOldDocsAdmin('statuses', 'expiresAt', now),
+                    deleteOldDocsAdmin('visitorSessions', 'masuk', now - 24 * H),
+                    deleteOldDocsAdmin('pesanMasuk', 'createdAt', now - 24 * H),
+                    deleteOldDocsAdmin('notifikasi', 'createdAt', now - 48 * H),
+                    deleteOldDocsAdmin('visitorPageViews', 'ts', now - 24 * H)
+                ]).catch(() => {});
+            }, 4000);
+        } catch (e) {}
+    })();
+
+    // ===== HELPER STATUS LOADING/GAGAL (biar gak keliatan "kosong" padahal masih dimuat/gagal) =====
+    function showLoadingState(el) {
+        if (el) el.innerHTML = '<div class="empty-state">Memuat data…</div>';
+    }
+    function showErrorState(el, label) {
+        if (el) el.innerHTML = `<div class="empty-state">Gagal memuat ${label}. Cek koneksi internet, lalu refresh halaman.</div>`;
+    }
+
+    // ===== DATA SEED: PRODUK LAMA (persis sama dengan yang ada di script.js web utama) =====
+    // Data produk lama sekarang ada di file terpisah (legacy_products_backup.json),
+    // gak lagi ditanam di source code -- lihat fungsi import produk di bawah.
+
+    // ===== NAVIGASI BOTTOM TAB =====
+    const tabPairs = [
+        { page: document.getElementById('pageNotif'), nav: document.getElementById('navNotif') },
+        { page: document.getElementById('pageTesti'), nav: document.getElementById('navTesti') },
+        { page: document.getElementById('pageProfil'), nav: document.getElementById('navProfil') },
+        { page: document.getElementById('pageProduk'), nav: document.getElementById('navProduk') },
+        { page: document.getElementById('pagePesan'), nav: document.getElementById('navPesan') },
+        { page: document.getElementById('pagePengunjung'), nav: document.getElementById('navPengunjung') }
+    ];
+    tabPairs.forEach(t => {
+        t.nav.onclick = () => {
+            tabPairs.forEach(o => {
+                o.page.classList.toggle('active', o === t);
+                o.nav.classList.toggle('active', o === t);
+            });
+        };
+    });
+
+    // ===== PREVIEW GAMBAR =====
+    function wirePreview(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        input.addEventListener('change', () => {
+            const file = input.files[0];
+            if (!file) { preview.style.display = 'none'; return; }
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        });
+    }
+    wirePreview('notifImgInput', 'notifImgPreview');
+    // ===== WATERMARK OTOMATIS UNTUK FOTO TESTIMONI =====
+    // Diagonal, merah, gaya tulisan tangan/marker — sesuai contoh yang dikasih.
+    function applyWatermark(dataUrl) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = async () => {
+                try {
+                    const fontSize = Math.round(img.width * 0.14) || 60;
+                    if (document.fonts && document.fonts.load) {
+                        try { await document.fonts.load(`${fontSize}px "Permanent Marker"`); } catch (e) {}
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    ctx.save();
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(-25 * Math.PI / 180);
+                    ctx.font = `${fontSize}px "Permanent Marker", cursive`;
+                    ctx.fillStyle = 'rgba(224, 32, 32, 0.95)';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.shadowColor = 'rgba(0,0,0,0.15)';
+                    ctx.shadowBlur = 3;
+                    ctx.fillText('dixzpays-vip', 0, 0);
+                    ctx.restore();
+                    resolve(canvas.toDataURL('image/jpeg', 0.85));
+                } catch (err) { reject(err); }
+            };
+            img.onerror = () => reject(new Error('Gagal memuat gambar untuk watermark'));
+            img.src = dataUrl;
+        });
+    }
+
+    let testiImgBase64 = '';
+    document.getElementById('testiImgInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        const preview = document.getElementById('testiImgPreview');
+        if (!file) { preview.style.display = 'none'; testiImgBase64 = ''; return; }
+        try {
+            const resized = await withTimeout(fileToCompressedBase64(file), 20000, 'Proses gambar');
+            const watermarked = await applyWatermark(resized);
+            testiImgBase64 = await withTimeout(uploadImageToCloudinary(dataUrlToBlob(watermarked)), 20000, 'Upload gambar');
+            preview.src = testiImgBase64;
+            preview.style.display = 'block';
+        } catch (err) {
+            alert('Gagal proses foto: ' + err.message);
+        }
+    });
+    wirePreview('profilAvatarInput', 'profilAvatarPreview');
+    wirePreview('profilBannerInput', 'profilBannerPreview');
+
+    // ===== SINKRON DAFTAR PRODUK OTOMATIS (dari web utama, lewat koleksi productMeta) =====
+    window.__productMap = {}; // key -> nama
+    const testiProdukSelect = document.getElementById('testiProdukInput');
+    onSnapshot(query(collection(db, 'productMeta'), orderBy('id')), (snap) => {
+        window.__productMap = {};
+        const currentVal = testiProdukSelect.value;
+        testiProdukSelect.innerHTML = '';
+        snap.forEach(docSnap => {
+            const p = docSnap.data();
+            window.__productMap[p.key] = p.name;
+            const opt = document.createElement('option');
+            opt.value = p.key;
+            opt.textContent = p.name;
+            testiProdukSelect.appendChild(opt);
+        });
+        if (currentVal && window.__productMap[currentVal]) testiProdukSelect.value = currentVal;
+    });
+
+    // ===== TOGGLE STATUS ONLINE / OFFLINE (dipantulkan ke website utama) =====
+    const btnStatusOnline = document.getElementById('btnStatusOnline');
+    const btnStatusOffline = document.getElementById('btnStatusOffline');
+    function setStatusUI(online) {
+        btnStatusOnline.classList.toggle('active', online);
+        btnStatusOffline.classList.toggle('active', !online);
+    }
+    onSnapshot(doc(db, 'settings', 'status'), (snap) => {
+        setStatusUI(snap.exists() ? (snap.data().online !== false) : true);
+    });
+    btnStatusOnline.addEventListener('click', () => setDoc(doc(db, 'settings', 'status'), { online: true }, { merge: true }));
+    btnStatusOffline.addEventListener('click', () => setDoc(doc(db, 'settings', 'status'), { online: false }, { merge: true }));
+
+    // ===== TAB PROFIL: preload data saat ini + simpan perubahan =====
+    let currentProfil = {};
+    onSnapshot(doc(db, 'settings', 'profile'), (snap) => {
+        currentProfil = snap.exists() ? snap.data() : {};
+        const namaEl = document.getElementById('profilNamaInput');
+        const bioEl = document.getElementById('profilBioInput');
+        const avatarPrev = document.getElementById('profilAvatarPreview');
+        const bannerPrev = document.getElementById('profilBannerPreview');
+        // jangan timpa yang lagi diketik user; cuma isi kalau field masih kosong
+        if (document.activeElement !== namaEl && !namaEl.value) namaEl.value = currentProfil.nama || '';
+        if (document.activeElement !== bioEl && !bioEl.value) bioEl.value = currentProfil.bio || '';
+        if (currentProfil.avatar) { avatarPrev.src = currentProfil.avatar; avatarPrev.style.display = 'block'; }
+        if (currentProfil.banner) { bannerPrev.src = currentProfil.banner; bannerPrev.style.display = 'block'; }
+    });
+
+    document.getElementById('btnSubmitProfil').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSubmitProfil');
+        const nama = document.getElementById('profilNamaInput').value.trim();
+        const bio = document.getElementById('profilBioInput').value.trim();
+        const avatarFile = document.getElementById('profilAvatarInput').files[0];
+        const bannerFile = document.getElementById('profilBannerInput').files[0];
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        try {
+            const update = {};
+            if (nama) update.nama = nama;
+            if (bio) update.bio = bio;
+            if (avatarFile) update.avatar = await fileToBase64IfAny(avatarFile);
+            if (bannerFile) update.banner = await fileToBase64IfAny(bannerFile);
+            await withTimeout(
+                setDoc(doc(db, 'settings', 'profile'), update, { merge: true }),
+                15000, 'Simpan ke database'
+            );
+            alert('Profil berhasil disimpan.');
+            document.getElementById('profilAvatarInput').value = '';
+            document.getElementById('profilBannerInput').value = '';
+        } catch (e) {
+            console.error('Gagal simpan profil:', e);
+            alert('Gagal menyimpan profil: ' + e.message);
+        }
+        btn.disabled = false; btn.textContent = 'Simpan Perubahan';
+    });
+
+    // ================= TAB NOTIFIKASI PRODUK =================
+    let pfImages = [];
+    let pfAddonImages = [];
+    let pfDescBlocks = [];
+    let pfQrisBase64 = '';
+    let pfAddonQrisBase64 = '';
+    let pfFollowerData = {};
+    const FOLLOWER_TIERS = [100,200,300,400,500,600,700,800,900,1000];
+    let editingProdukId = null;
+    let editingProdukOrder = 999;
+
+    function renderImgThumbs(containerId, arr) {
+        const c = document.getElementById(containerId);
+        c.innerHTML = arr.map((src, i) => `
+            <div class="thumb-wrap">
+                <img src="${src}" />
+                <div class="thumb-del" data-i="${i}">✕</div>
+            </div>
+        `).join('');
+        c.querySelectorAll('.thumb-del').forEach(btn => {
+            btn.onclick = () => { arr.splice(Number(btn.dataset.i), 1); renderImgThumbs(containerId, arr); };
+        });
+    }
+
+    function renderFollowerRows() {
+        const c = document.getElementById('pfFollowerRows');
+        if (!c) return;
+        c.innerHTML = FOLLOWER_TIERS.map(qty => {
+            const row = pfFollowerData[qty] || {};
+            return `
+                <div class="follower-row" data-qty="${qty}">
+                    <div class="follower-row-title">${qty} Followers</div>
+                    <div class="follower-row-fields">
+                        <div>
+                            <label style="margin-top:0;">Harga jual</label>
+                            <input type="number" data-f="price" value="${row.price || ''}" />
+                        </div>
+                        <div>
+                            <label style="margin-top:0;">Foto QRIS</label>
+                            <input type="file" accept="image/*" data-f="qrispick" />
+                        </div>
+                    </div>
+                    <img class="preview-img" data-f="qrisimg" src="${row.qris || ''}" style="${row.qris ? 'display:block;' : ''}" />
+                </div>
+            `;
+        }).join('');
+        c.querySelectorAll('.follower-row').forEach(rowEl => {
+            const qty = Number(rowEl.dataset.qty);
+            if (!pfFollowerData[qty]) pfFollowerData[qty] = { price: 0, qris: '' };
+            rowEl.querySelector('[data-f="price"]').addEventListener('input', (e) => {
+                pfFollowerData[qty].price = Number(e.target.value) || 0;
+            });
+            rowEl.querySelector('[data-f="qrispick"]').addEventListener('change', async (e) => {
+                const f = e.target.files[0]; if (!f) return;
+                try {
+                    const b64 = await fileToBase64IfAny(f);
+                    pfFollowerData[qty].qris = b64;
+                    const img = rowEl.querySelector('[data-f="qrisimg"]');
+                    img.src = b64; img.style.display = 'block';
+                } catch (err) { alert('Gagal proses QRIS ' + qty + ': ' + err.message); }
+            });
+        });
+    }
+
+
+    async function handleMultiFileToArray(inputEl, arr, containerId) {
+        const files = Array.from(inputEl.files || []);
+        for (const f of files) {
+            try { arr.push(await fileToBase64IfAny(f)); } catch (e) { alert('Gagal proses gambar: ' + e.message); }
+        }
+        inputEl.value = '';
+        renderImgThumbs(containerId, arr);
+    }
+    document.getElementById('pfFoto').addEventListener('change', (e) => handleMultiFileToArray(e.target, pfImages, 'pfFotoThumbs'));
+    document.getElementById('pfAddonFoto').addEventListener('change', (e) => handleMultiFileToArray(e.target, pfAddonImages, 'pfAddonFotoThumbs'));
+
+    document.getElementById('pfQris').addEventListener('change', async (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        try {
+            pfQrisBase64 = await fileToBase64IfAny(f);
+            const prev = document.getElementById('pfQrisPreview'); prev.src = pfQrisBase64; prev.style.display = 'block';
+        } catch (err) { alert('Gagal proses QRIS: ' + err.message); }
+    });
+    document.getElementById('pfAddonQris').addEventListener('change', async (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        try {
+            pfAddonQrisBase64 = await fileToBase64IfAny(f);
+            const prev = document.getElementById('pfAddonQrisPreview'); prev.src = pfAddonQrisBase64; prev.style.display = 'block';
+        } catch (err) { alert('Gagal proses QRIS tambahan: ' + err.message); }
+    });
+
+    document.getElementById('pfPriceMode').addEventListener('change', (e) => {
+        const coret = e.target.value === 'coret';
+        document.getElementById('pfPriceNormalWrap').style.display = coret ? 'none' : 'block';
+        document.getElementById('pfPriceCoretWrap').style.display = coret ? 'block' : 'none';
+    });
+    document.getElementById('pfHasAddon').addEventListener('change', (e) => {
+        document.getElementById('pfAddonWrap').style.display = e.target.checked ? 'block' : 'none';
+    });
+
+    function renderDescBlocks() {
+        const c = document.getElementById('pfDescBlocks');
+        c.innerHTML = pfDescBlocks.map((b, i) => {
+            let inner = '';
+            if (b.type === 'heading') inner = `<input type="text" data-f="text" placeholder="Judul..." value="${(b.text||'').replace(/"/g,'&quot;')}" />`;
+            else if (b.type === 'paragraph') inner = `<textarea data-f="text" placeholder="Tulis paragraf...">${b.text||''}</textarea>
+                <label style="display:flex;align-items:center;gap:6px;margin-top:4px;"><input type="checkbox" data-f="bold" style="width:auto;" ${b.bold?'checked':''}/> Tebal (bold)</label>`;
+            else if (b.type === 'list') inner = `<textarea data-f="items" placeholder="Satu poin per baris...">${(b.items||[]).join('\n')}</textarea>`;
+            else if (b.type === 'divider') inner = `<div style="font-size:0.75rem;color:#999;">— garis pemisah —</div>`;
+            else if (b.type === 'image') inner = b.src
+                ? `<img src="${b.src}" style="width:100%;border-radius:8px;margin-top:4px;" />`
+                : `<input type="file" data-f="imgpick" accept="image/*" />`;
+            const label = { heading: 'Judul', paragraph: 'Paragraf', list: 'Poin-poin', divider: 'Garis', image: 'Foto' }[b.type];
+            return `
+                <div class="desc-block" data-i="${i}">
+                    <div class="desc-block-row">
+                        <span class="desc-block-label">${label}</span>
+                        <button type="button" class="btn small danger" data-delblock="${i}">Hapus</button>
+                    </div>
+                    ${inner}
+                </div>
+            `;
+        }).join('');
+
+        c.querySelectorAll('[data-delblock]').forEach(btn => {
+            btn.onclick = () => { pfDescBlocks.splice(Number(btn.dataset.delblock), 1); renderDescBlocks(); };
+        });
+        c.querySelectorAll('.desc-block').forEach(blockEl => {
+            const i = Number(blockEl.dataset.i);
+            const b = pfDescBlocks[i];
+            blockEl.querySelectorAll('[data-f="text"]').forEach(el => el.addEventListener('input', () => { b.text = el.value; }));
+            blockEl.querySelectorAll('[data-f="bold"]').forEach(el => el.addEventListener('change', () => { b.bold = el.checked; }));
+            blockEl.querySelectorAll('[data-f="items"]').forEach(el => el.addEventListener('input', () => { b.items = el.value.split('\n').filter(x => x.trim()); }));
+            const imgPick = blockEl.querySelector('[data-f="imgpick"]');
+            if (imgPick) imgPick.addEventListener('change', async () => {
+                const f = imgPick.files[0]; if (!f) return;
+                try { b.src = await fileToBase64IfAny(f); renderDescBlocks(); } catch (e) { alert('Gagal proses foto: ' + e.message); }
+            });
+        });
+    }
+    document.querySelectorAll('[data-addblock]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.addblock;
+            const block = { type };
+            if (type === 'list') block.items = [];
+            if (type === 'paragraph') { block.text = ''; block.bold = false; }
+            pfDescBlocks.push(block);
+            renderDescBlocks();
+        });
+    });
+
+    function applyProdukTypeUI(isSocial) {
+        ['pfPriceMode', 'pfAdminFee', 'pfQris'].forEach(id => {
+            document.getElementById(id).closest('label') && (document.getElementById(id).closest('label').style.display = isSocial ? 'none' : 'block');
+        });
+        document.getElementById('pfPriceNormalWrap').style.display = isSocial ? 'none' : (document.getElementById('pfPriceMode').value === 'coret' ? 'none' : 'block');
+        document.getElementById('pfPriceCoretWrap').style.display = isSocial ? 'none' : (document.getElementById('pfPriceMode').value === 'coret' ? 'block' : 'none');
+        document.getElementById('pfQrisPreview').parentElement.style.display = isSocial ? 'none' : 'block';
+        document.getElementById('pfFollowerWrap').style.display = isSocial ? 'block' : 'none';
+        const addonLabel = document.getElementById('pfHasAddon').closest('label');
+        if (addonLabel) addonLabel.style.display = isSocial ? 'none' : 'flex';
+        if (isSocial) document.getElementById('pfAddonWrap').style.display = 'none';
+    }
+    document.getElementById('pfJenisBaru').addEventListener('change', (e) => {
+        const isSocial = e.target.value === 'social';
+        document.getElementById('pfPlatformWrap').style.display = isSocial ? 'block' : 'none';
+        applyProdukTypeUI(isSocial);
+        if (isSocial) renderFollowerRows();
+    });
+
+    function resetProdukForm() {
+        editingProdukId = null;
+        editingProdukOrder = 999;
+        pfImages = []; pfAddonImages = []; pfDescBlocks = [];
+        pfQrisBase64 = ''; pfAddonQrisBase64 = '';
+        pfFollowerData = {};
+        document.getElementById('pfJenisWrap').style.display = 'none';
+        document.getElementById('pfJenisBaru').value = 'normal';
+        document.getElementById('pfPlatformWrap').style.display = 'none';
+        document.getElementById('pfPlatformBaru').value = 'instagram';
+        document.getElementById('pfNama').value = '';
+        document.getElementById('pfPriceMode').value = 'normal';
+        document.getElementById('pfPriceNormalWrap').style.display = 'block';
+        document.getElementById('pfPriceCoretWrap').style.display = 'none';
+        document.getElementById('pfPriceNormal').value = '';
+        document.getElementById('pfPriceOriginal').value = '';
+        document.getElementById('pfPriceSale').value = '';
+        document.getElementById('pfAdminFee').value = '0';
+        document.getElementById('pfGridDesc').value = '';
+        document.getElementById('pfQrisPreview').style.display = 'none';
+        document.getElementById('pfHasAddon').checked = false;
+        document.getElementById('pfAddonWrap').style.display = 'none';
+        document.getElementById('pfAddonNama').value = '';
+        document.getElementById('pfAddonDesc').value = '';
+        document.getElementById('pfAddonPrice').value = '';
+        document.getElementById('pfAddonComboPrice').value = '';
+        document.getElementById('pfAddonAdminFee').value = '0';
+        document.getElementById('pfAddonQrisPreview').style.display = 'none';
+        renderImgThumbs('pfFotoThumbs', pfImages);
+        renderImgThumbs('pfAddonFotoThumbs', pfAddonImages);
+        renderDescBlocks();
+        renderFollowerRows();
+    }
+
+    window.__produkCache = {};
+    function openProdukForm(id) {
+        document.getElementById('produkFormCard').style.display = 'block';
+        document.getElementById('produkFormCard').scrollIntoView({ behavior: 'smooth' });
+        if (!id) {
+            resetProdukForm();
+            document.getElementById('produkFormTitle').textContent = 'Tambah Produk Baru';
+            document.getElementById('pfJenisWrap').style.display = 'block';
+            document.getElementById('pfJenisBaru').value = 'normal';
+            document.getElementById('pfPlatformWrap').style.display = 'none';
+            applyProdukTypeUI(false);
+            return;
+        }
+        const d = window.__produkCache[id];
+        if (!d) return;
+        resetProdukForm();
+        document.getElementById('pfJenisWrap').style.display = 'none';
+        editingProdukId = id;
+        editingProdukOrder = d.order ?? 999;
+        document.getElementById('produkFormTitle').textContent = 'Edit: ' + (d.name || '');
+        document.getElementById('pfNama').value = d.name || '';
+        pfImages = [...(d.images || [])];
+        renderImgThumbs('pfFotoThumbs', pfImages);
+        document.getElementById('pfGridDesc').value = d.gridShortDesc || '';
+        document.getElementById('pfAdminFee').value = d.adminFee || 0;
+        if (d.priceMode === 'coret') {
+            document.getElementById('pfPriceMode').value = 'coret';
+            document.getElementById('pfPriceNormalWrap').style.display = 'none';
+            document.getElementById('pfPriceCoretWrap').style.display = 'block';
+            document.getElementById('pfPriceOriginal').value = d.priceOriginal || '';
+            document.getElementById('pfPriceSale').value = d.priceSale || '';
+        } else {
+            document.getElementById('pfPriceNormal').value = d.priceNormal || '';
+        }
+        if (d.qris) { pfQrisBase64 = d.qris; const p = document.getElementById('pfQrisPreview'); p.src = d.qris; p.style.display = 'block'; }
+        pfDescBlocks = JSON.parse(JSON.stringify(d.descBlocks || []));
+        renderDescBlocks();
+        const isSocial = d.type !== 'digital';
+        applyProdukTypeUI(isSocial);
+        if (isSocial) {
+            pfFollowerData = {};
+            FOLLOWER_TIERS.forEach(qty => {
+                const fd = (d.followerData && d.followerData[qty]) || {};
+                pfFollowerData[qty] = { price: fd.price || 0, qris: fd.qris || '' };
+            });
+            renderFollowerRows();
+        }
+        if (d.addon) {
+            document.getElementById('pfHasAddon').checked = true;
+            document.getElementById('pfAddonWrap').style.display = 'block';
+            document.getElementById('pfAddonNama').value = d.addon.name || '';
+            document.getElementById('pfAddonDesc').value = d.addon.desc || '';
+            document.getElementById('pfAddonPrice').value = d.addon.priceNormal || '';
+            document.getElementById('pfAddonComboPrice').value = d.addon.priceComboSale || '';
+            document.getElementById('pfAddonAdminFee').value = d.addon.adminFeeCombo || 0;
+            pfAddonImages = [...(d.addon.images || [])];
+            renderImgThumbs('pfAddonFotoThumbs', pfAddonImages);
+            if (d.addon.qrisCombo) { pfAddonQrisBase64 = d.addon.qrisCombo; const p = document.getElementById('pfAddonQrisPreview'); p.src = d.addon.qrisCombo; p.style.display = 'block'; }
+        }
+    }
+    document.getElementById('btnProdukBaru').addEventListener('click', () => openProdukForm(null));
+    document.getElementById('btnBatalProduk').addEventListener('click', () => { document.getElementById('produkFormCard').style.display = 'none'; });
+
+    document.getElementById('btnSimpanProduk').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSimpanProduk');
+        const nama = document.getElementById('pfNama').value.trim();
+        if (!nama) { alert('Nama produk wajib diisi.'); return; }
+        if (pfImages.length === 0) { alert('Minimal 1 foto produk.'); return; }
+        const priceMode = document.getElementById('pfPriceMode').value;
+        btn.disabled = true; btn.textContent = 'Menyimpan...';
+        try {
+            const existingType = editingProdukId && window.__produkCache[editingProdukId]
+                ? window.__produkCache[editingProdukId].type
+                : (document.getElementById('pfJenisBaru').value === 'social' ? document.getElementById('pfPlatformBaru').value : 'digital');
+            const isSocialType = existingType !== 'digital';
+            const payload = {
+                name: nama,
+                type: existingType,
+                order: editingProdukOrder === 999 ? Date.now() : editingProdukOrder,
+                images: pfImages,
+                gridShortDesc: document.getElementById('pfGridDesc').value.trim(),
+                descBlocks: pfDescBlocks
+            };
+            if (isSocialType) {
+                const fd = {};
+                FOLLOWER_TIERS.forEach(qty => {
+                    fd[qty] = {
+                        price: (pfFollowerData[qty] && pfFollowerData[qty].price) || 0,
+                        qris: (pfFollowerData[qty] && pfFollowerData[qty].qris) || ''
+                    };
+                });
+                payload.followerData = fd;
+                payload.gridPriceLabel = 'Rp ' + (fd[100].price || 0).toLocaleString('id-ID');
+            } else {
+                payload.priceMode = priceMode;
+                payload.adminFee = Number(document.getElementById('pfAdminFee').value) || 0;
+                payload.qris = pfQrisBase64;
+                if (priceMode === 'coret') {
+                    payload.priceOriginal = Number(document.getElementById('pfPriceOriginal').value) || 0;
+                    payload.priceSale = Number(document.getElementById('pfPriceSale').value) || 0;
+                } else {
+                    payload.priceNormal = Number(document.getElementById('pfPriceNormal').value) || 0;
+                }
+                if (document.getElementById('pfHasAddon').checked) {
+                    payload.addon = {
+                        name: document.getElementById('pfAddonNama').value.trim(),
+                        desc: document.getElementById('pfAddonDesc').value.trim(),
+                        images: pfAddonImages,
+                        priceNormal: Number(document.getElementById('pfAddonPrice').value) || 0,
+                        priceComboSale: Number(document.getElementById('pfAddonComboPrice').value) || 0,
+                        adminFeeCombo: Number(document.getElementById('pfAddonAdminFee').value) || 0,
+                        qrisCombo: pfAddonQrisBase64
+                    };
+                } else {
+                    payload.addon = null;
+                }
+            }
+            if (editingProdukId) {
+                payload.key = window.__produkCache[editingProdukId] ? window.__produkCache[editingProdukId].key : undefined;
+                await withTimeout(updateDoc(doc(db, 'products', editingProdukId), payload), 15000, 'Simpan produk');
+            } else {
+                await withTimeout(addDoc(collection(db, 'products'), payload), 15000, 'Simpan produk');
+            }
+            document.getElementById('produkFormCard').style.display = 'none';
+            alert('Produk berhasil disimpan.');
+        } catch (e) {
+            console.error('Gagal simpan produk:', e);
+            alert('Gagal menyimpan produk: ' + e.message);
+        }
+        btn.disabled = false; btn.textContent = 'Simpan Produk';
+    });
+
+    const produkList = document.getElementById('produkList');
+    showLoadingState(produkList);
+    onSnapshot(query(collection(db, 'products'), orderBy('order')), (snap) => {
+        window.__produkCache = {};
+        produkList.innerHTML = '';
+        if (snap.empty) { produkList.innerHTML = '<div class="empty-state">Belum ada produk. Import dulu dari web utama, atau tambah baru.</div>'; return; }
+        snap.forEach(docSnap => {
+            const d = docSnap.data();
+            window.__produkCache[docSnap.id] = d;
+            const priceTxt = d.type && d.type !== 'digital'
+                ? `Mulai Rp${((d.followerData && d.followerData[100] && d.followerData[100].price) || 0).toLocaleString('id-ID')}`
+                : (d.priceMode === 'coret'
+                    ? `Rp${(d.priceOriginal||0).toLocaleString('id-ID')} → Rp${(d.priceSale||0).toLocaleString('id-ID')}`
+                    : `Rp${(d.priceNormal||0).toLocaleString('id-ID')}`);
+            const item = document.createElement('div');
+            item.className = 'produk-item';
+            item.innerHTML = `
+                <img src="${(d.images && d.images[0]) || ''}" />
+                <div class="produk-item-info">
+                    <div class="nm">${d.name || '(tanpa nama)'}</div>
+                    <div class="pr">${priceTxt}${d.addon ? ' · ada produk tambahan' : ''}</div>
+                </div>
+                <button class="btn small secondary" data-act="edit">Edit</button>
+                <button class="btn small danger" data-act="del">Hapus</button>
+            `;
+            item.querySelector('[data-act="edit"]').onclick = () => openProdukForm(docSnap.id);
+            item.querySelector('[data-act="del"]').onclick = async () => {
+                if (!confirm('Hapus produk "' + (d.name||'') + '"? Produk akan hilang dari web utama.')) return;
+                await deleteDoc(doc(db, 'products', docSnap.id));
+            };
+            produkList.appendChild(item);
+        });
+    }, (err) => { console.warn('Gagal ambil data products:', err); showErrorState(produkList, 'produk'); });
+
+    // ===== IMPORT PRODUK LAMA (dari file JSON backup, bukan lagi ditanam di source) =====
+    // Data produk lama sebelumnya nempel langsung di kode ini — dipindah ke file terpisah
+    // (legacy_products_backup.json) yang cuma kamu simpan sendiri, biar gak ikut kebocor
+    // kalau ada yang nyalin source code web ini.
+    document.getElementById('btnImportProduk').addEventListener('click', () => {
+        document.getElementById('importProdukFile').click();
+    });
+    document.getElementById('importProdukFile').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        let legacy;
+        try {
+            legacy = JSON.parse(await file.text());
+        } catch (err) {
+            alert('File JSON tidak valid: ' + err.message);
+            e.target.value = '';
+            return;
+        }
+        const existing = await getDocs(collection(db, 'products'));
+        if (!existing.empty) {
+            if (!confirm('Sudah ada data produk di database. Import & timpa produk dari file ini?')) { e.target.value = ''; return; }
+        }
+        const btn = document.getElementById('btnImportProduk');
+        btn.disabled = true; btn.textContent = 'Mengimport...';
+        try {
+            for (const id of Object.keys(legacy)) {
+                await setDoc(doc(db, 'products', id), legacy[id]);
+            }
+            alert('Import produk lama selesai.');
+        } catch (err) {
+            console.error('Gagal import produk:', err);
+            alert('Gagal import: ' + err.message);
+        }
+        btn.disabled = false; btn.textContent = 'Import Produk Lama dari File JSON';
+        e.target.value = '';
+    });
+
+    function withTimeout(promise, ms, label) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} kelamaan (>${ms/1000}dtk). Cek koneksi internet ya.`)), ms))
+        ]);
+    }
+
+    // ===== MIGRASI GAMBAR LAMA (base64) KE CLOUDINARY, SEKALI JALAN =====
+    // Perbaikan Cloudinary sebelumnya cuma berlaku buat UPLOAD BARU. Data yang udah kepalanjur
+    // tersimpan sebagai base64 sebelum ini (produk, testimoni, notifikasi, foto profil) gak
+    // otomatis ikut pindah -- makanya perlu tombol ini buat beresin yang lama sekali jalan.
+    function isBase64Image(v) { return typeof v === 'string' && v.startsWith('data:image'); }
+    async function migrateVal(v) {
+        if (!isBase64Image(v)) return v;
+        return uploadImageToCloudinary(dataUrlToBlob(v));
+    }
+    document.getElementById('btnMigrasiGambar').addEventListener('click', async () => {
+        if (!confirm('Ini akan mengunggah semua gambar lama (base64) di produk, testimoni, notifikasi, dan foto profil ke Cloudinary, lalu menggantinya jadi link. Proses bisa makan waktu beberapa menit tergantung jumlah data. Lanjutkan?')) return;
+        const btn = document.getElementById('btnMigrasiGambar');
+        const log = document.getElementById('migrasiGambarLog');
+        btn.disabled = true; btn.textContent = 'Migrasi berjalan...';
+        let totalKonversi = 0;
+        function tulisLog(msg) { log.textContent += msg + '\n'; }
+        log.textContent = '';
+        try {
+            // ----- Produk -----
+            const produkSnap = await getDocs(collection(db, 'products'));
+            for (const docSnap of produkSnap.docs) {
+                const d = docSnap.data();
+                const update = {};
+                let ubah = false;
+                if (Array.isArray(d.mainImages)) {
+                    const arr = [];
+                    for (const img of d.mainImages) { const n = await migrateVal(img); if (n !== img) ubah = true; arr.push(n); }
+                    if (ubah) update.mainImages = arr;
+                }
+                if (Array.isArray(d.gallery)) {
+                    const arr = [];
+                    let g = false;
+                    for (const img of d.gallery) { const n = await migrateVal(img); if (n !== img) g = true; arr.push(n); }
+                    if (g) { update.gallery = arr; ubah = true; }
+                }
+                if (isBase64Image(d.qris)) { update.qris = await migrateVal(d.qris); ubah = true; }
+                if (Array.isArray(d.descBlocks)) {
+                    const arr = [];
+                    let bChanged = false;
+                    for (const b of d.descBlocks) {
+                        if (b && b.type === 'image' && isBase64Image(b.src)) {
+                            arr.push({ ...b, src: await migrateVal(b.src) });
+                            bChanged = true;
+                        } else arr.push(b);
+                    }
+                    if (bChanged) { update.descBlocks = arr; ubah = true; }
+                }
+                if (d.addon) {
+                    const addon = { ...d.addon };
+                    let aChanged = false;
+                    if (isBase64Image(addon.img)) { addon.img = await migrateVal(addon.img); aChanged = true; }
+                    if (isBase64Image(addon.qrisCombo)) { addon.qrisCombo = await migrateVal(addon.qrisCombo); aChanged = true; }
+                    if (aChanged) { update.addon = addon; ubah = true; }
+                }
+                if (ubah) {
+                    await updateDoc(doc(db, 'products', docSnap.id), update);
+                    totalKonversi++;
+                    tulisLog(`✓ Produk "${d.name || docSnap.id}" selesai dimigrasi`);
+                }
+            }
+            // ----- Testimoni -----
+            const testiSnap = await getDocs(collection(db, 'testimoni'));
+            for (const docSnap of testiSnap.docs) {
+                const d = docSnap.data();
+                if (isBase64Image(d.img)) {
+                    await updateDoc(doc(db, 'testimoni', docSnap.id), { img: await migrateVal(d.img) });
+                    totalKonversi++;
+                    tulisLog(`✓ Testimoni ${docSnap.id} selesai dimigrasi`);
+                }
+            }
+            // ----- Notifikasi -----
+            const notifSnap = await getDocs(collection(db, 'notifikasi'));
+            for (const docSnap of notifSnap.docs) {
+                const d = docSnap.data();
+                if (isBase64Image(d.img)) {
+                    await updateDoc(doc(db, 'notifikasi', docSnap.id), { img: await migrateVal(d.img) });
+                    totalKonversi++;
+                    tulisLog(`✓ Notifikasi ${docSnap.id} selesai dimigrasi`);
+                }
+            }
+            // ----- Foto profil (avatar & banner) -----
+            const profSnap = await getDocs(collection(db, 'settings'));
+            for (const docSnap of profSnap.docs) {
+                const d = docSnap.data();
+                const update = {};
+                let ubah = false;
+                if (isBase64Image(d.avatar)) { update.avatar = await migrateVal(d.avatar); ubah = true; }
+                if (isBase64Image(d.banner)) { update.banner = await migrateVal(d.banner); ubah = true; }
+                if (ubah) {
+                    await updateDoc(doc(db, 'settings', docSnap.id), update);
+                    totalKonversi++;
+                    tulisLog(`✓ Profil (${docSnap.id}) selesai dimigrasi`);
+                }
+            }
+            tulisLog(`\nSelesai! Total ${totalKonversi} dokumen dimigrasi ke Cloudinary.`);
+            if (totalKonversi === 0) tulisLog('Gak ada gambar base64 lama yang ketemu -- semua udah bersih.');
+        } catch (err) {
+            tulisLog('Gagal: ' + err.message);
+            console.error(err);
+        }
+        btn.disabled = false; btn.textContent = 'Migrasi Gambar Lama ke Cloudinary (sekali jalan)';
+    });
+
+    function dataUrlToBlob(dataUrl) {
+        const [meta, b64] = dataUrl.split(',');
+        const mime = meta.match(/:(.*?);/)[1];
+        const bin = atob(b64);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        return new Blob([arr], { type: mime });
+    }
+
+    // Gambar dikecilkan dulu di browser (hemat kuota upload & Firestore), baru diupload
+    // ke Cloudinary. Yang disimpan ke Firestore cuma URL hasilnya (pendek), bukan base64.
+    function fileToCompressedBase64(file, maxWidth = 1000, quality = 0.72) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('Gagal memuat gambar.'));
+                img.onload = () => {
+                    let { width, height } = img;
+                    if (width > maxWidth) { height = Math.round(height * (maxWidth / width)); width = maxWidth; }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width; canvas.height = height;
+                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Nama fungsi dipertahankan (dipakai di banyak tempat) tapi sekarang hasilnya URL Cloudinary,
+    // bukan base64 lagi — jadi bisa langsung dipakai sebagai src gambar seperti biasa.
+    async function fileToBase64IfAny(file) {
+        if (!file) return '';
+        const dataUrl = await withTimeout(fileToCompressedBase64(file), 20000, 'Proses gambar');
+        return withTimeout(uploadImageToCloudinary(dataUrlToBlob(dataUrl)), 20000, 'Upload gambar');
+    }
+
+    function formatWaktu(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return d.toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ===== NOTIFIKASI V1 (TEKS BERJALAN): SUBMIT =====
+    document.getElementById('btnSubmitNotifV1').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSubmitNotifV1');
+        const textEl = document.getElementById('notifV1Input');
+        const text = textEl.value.trim();
+        if (!text) { alert('Pesan wajib diisi.'); return; }
+        btn.disabled = true; btn.textContent = 'Menambah...';
+        try {
+            await withTimeout(
+                addDoc(collection(db, 'notifikasiV1'), { text, createdAt: Date.now() }),
+                15000, 'Simpan ke database'
+            );
+            textEl.value = '';
+        } catch (e) {
+            console.error('Gagal tambah notifikasi V1:', e);
+            alert('Gagal menambah pesan: ' + e.message);
+        }
+        btn.disabled = false; btn.textContent = 'Tambah Pesan';
+    });
+
+    // ===== NOTIFIKASI V1: RIWAYAT (realtime) =====
+    const notifV1Riwayat = document.getElementById('notifV1Riwayat');
+    showLoadingState(notifV1Riwayat);
+    onSnapshot(query(collection(db, 'notifikasiV1'), orderBy('createdAt', 'asc')), (snap) => {
+        notifV1Riwayat.innerHTML = '';
+        if (snap.empty) { notifV1Riwayat.innerHTML = '<div class="empty-state">Belum ada pesan.</div>'; return; }
+        snap.forEach(docSnap => {
+            const d = docSnap.data();
+            const item = document.createElement('div');
+            item.className = 'riwayat-item';
+            item.innerHTML = `
+                <div class="riwayat-text">${(d.text || '').replace(/</g, '&lt;')}</div>
+                <div class="riwayat-meta">${formatWaktu(d.createdAt)}</div>
+                <div class="riwayat-actions">
+                    <button class="btn small secondary" data-act="edit">Edit Teks</button>
+                    <button class="btn small danger" data-act="del">Hapus</button>
+                </div>
+            `;
+            item.querySelector('[data-act="edit"]').onclick = async () => {
+                const newText = prompt('Edit pesan:', d.text || '');
+                if (newText === null) return;
+                await updateDoc(doc(db, 'notifikasiV1', docSnap.id), { text: newText });
+            };
+            item.querySelector('[data-act="del"]').onclick = async () => {
+                if (!confirm('Hapus pesan ini?')) return;
+                await deleteDoc(doc(db, 'notifikasiV1', docSnap.id));
+            };
+            notifV1Riwayat.appendChild(item);
+        });
+    }, (err) => { console.warn('Gagal ambil data notifikasiV1:', err); showErrorState(notifV1Riwayat, 'notifikasi ticker'); });
+
+    // ===== NOTIFIKASI: SUBMIT =====
+    document.getElementById('btnSubmitNotif').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSubmitNotif');
+        const descEl = document.getElementById('notifDescInput');
+        const imgFile = document.getElementById('notifImgInput').files[0];
+        const desc = descEl.value.trim();
+        if (!desc) { alert('Teks deskripsi wajib diisi.'); return; }
+        btn.disabled = true; btn.textContent = 'Mengirim...';
+        try {
+            const imgUrl = await fileToBase64IfAny(imgFile);
+            await withTimeout(
+                addDoc(collection(db, 'notifikasi'), { desc, img: imgUrl, createdAt: Date.now() }),
+                15000, 'Simpan ke database'
+            );
+            descEl.value = '';
+            document.getElementById('notifImgInput').value = '';
+            document.getElementById('notifImgPreview').style.display = 'none';
+        } catch (e) {
+            console.error('Gagal kirim notifikasi:', e);
+            alert('Gagal mengirim notifikasi: ' + e.message);
+        }
+        btn.disabled = false; btn.textContent = 'Kirim Notifikasi';
+    });
+
+    // ===== NOTIFIKASI: RIWAYAT (realtime) =====
+    const notifRiwayat = document.getElementById('notifRiwayat');
+    showLoadingState(notifRiwayat);
+    onSnapshot(query(collection(db, 'notifikasi'), orderBy('createdAt', 'desc'), limit(200)), (snap) => {
+        notifRiwayat.innerHTML = '';
+        if (snap.empty) { notifRiwayat.innerHTML = '<div class="empty-state">Belum ada riwayat.</div>'; return; }
+        snap.forEach(docSnap => {
+            const d = docSnap.data();
+            const item = document.createElement('div');
+            item.className = 'riwayat-item';
+            item.innerHTML = `
+                ${d.img ? `<img src="${d.img}" />` : ''}
+                <div class="riwayat-text">${(d.desc || '').replace(/</g, '&lt;')}</div>
+                <div class="riwayat-meta">${formatWaktu(d.createdAt)}</div>
+                <div class="riwayat-actions">
+                    <button class="btn small secondary" data-act="edit">Edit Teks</button>
+                    <button class="btn small secondary" data-act="editfoto">Edit Foto</button>
+                    <button class="btn small danger" data-act="del">Hapus</button>
+                </div>
+                <input type="file" accept="image/*" style="display:none" data-act="fileinput" />
+            `;
+            item.querySelector('[data-act="edit"]').onclick = async () => {
+                const newDesc = prompt('Edit teks notifikasi:', d.desc || '');
+                if (newDesc === null) return;
+                await updateDoc(doc(db, 'notifikasi', docSnap.id), { desc: newDesc });
+            };
+            const fileInput = item.querySelector('[data-act="fileinput"]');
+            item.querySelector('[data-act="editfoto"]').onclick = () => fileInput.click();
+            fileInput.onchange = async () => {
+                const file = fileInput.files[0];
+                if (!file) return;
+                try {
+                    const base64 = await fileToBase64IfAny(file);
+                    await updateDoc(doc(db, 'notifikasi', docSnap.id), { img: base64 });
+                } catch (e) {
+                    alert('Gagal mengganti foto: ' + e.message);
+                }
+            };
+            item.querySelector('[data-act="del"]').onclick = async () => {
+                if (!confirm('Hapus notifikasi ini?')) return;
+                await deleteDoc(doc(db, 'notifikasi', docSnap.id));
+            };
+            notifRiwayat.appendChild(item);
+        });
+    }, (err) => { console.warn('Gagal ambil data notifikasi:', err); showErrorState(notifRiwayat, 'riwayat notifikasi'); });
+
+    // ===== TESTIMONI: SUBMIT =====
+    document.getElementById('btnSubmitTesti').addEventListener('click', async () => {
+        const btn = document.getElementById('btnSubmitTesti');
+        const productId = document.getElementById('testiProdukInput').value;
+        let stars = parseInt(document.getElementById('testiStarsInput').value, 10) || 5;
+        stars = Math.min(5, Math.max(3, stars));
+        if (!testiImgBase64) { alert('Foto transaksi wajib diisi.'); return; }
+        btn.disabled = true; btn.textContent = 'Mengirim...';
+        try {
+            await withTimeout(
+                addDoc(collection(db, 'testimoni'), { productId, img: testiImgBase64, stars, createdAt: Date.now(), legacy: false }),
+                15000, 'Simpan ke database'
+            );
+            document.getElementById('testiImgInput').value = '';
+            document.getElementById('testiImgPreview').style.display = 'none';
+            testiImgBase64 = '';
+        } catch (e) {
+            console.error('Gagal kirim testimoni:', e);
+            alert('Gagal mengirim testimoni: ' + e.message);
+        }
+        btn.disabled = false; btn.textContent = 'Kirim Testimoni';
+    });
+
+    // ===== TESTIMONI: IMPORT DATA LAMA (sekali saja) =====
+    const legacyApkJam = [
+        "https://i.ibb.co.com/1J0VmFw9/IMG-20260710-182323-507.jpg",
+        "https://i.ibb.co.com/xSGJKTWF/IMG-20260710-182353-008.jpg",
+        "https://i.ibb.co.com/ym388RmY/IMG-20260710-182444-954.jpg",
+        "https://i.ibb.co.com/9mpz0kwN/IMG-20260710-182507-305.jpg",
+        "https://i.ibb.co.com/QjzhTXC1/IMG-20260710-182529-021.jpg",
+        "https://i.ibb.co.com/TBLGXHKR/IMG-20260710-182544-870.jpg",
+        "https://i.ibb.co.com/kVLK16SP/IMG-20260710-182605-318.jpg",
+        "https://i.ibb.co.com/6RNz91Zv/IMG-20260710-182625-762.jpg",
+        "https://i.ibb.co.com/JwRrkGyF/IMG-20260710-182658-357.jpg",
+        "https://i.ibb.co.com/WNFn6XB9/IMG-20260710-182716-521.jpg"
+    ];
+    const legacyIg = ["https://i.ibb.co.com/yFpCBP5h/IMG-20260710-184434-523.jpg"];
+
+    document.getElementById('btnImportLegacy').addEventListener('click', async () => {
+        const existing = await getDocs(query(collection(db, 'testimoni'), where('legacy', '==', true)));
+        if (!existing.empty) {
+            if (!confirm('Data lama kelihatannya sudah pernah diimport. Import ulang lagi (bisa dobel)?')) return;
+        }
+        const btn = document.getElementById('btnImportLegacy');
+        btn.disabled = true; btn.textContent = 'Mengimport...';
+        let t = Date.now() - 100000;
+        for (const img of legacyApkJam) {
+            await addDoc(collection(db, 'testimoni'), { productId: 'apk-jam', img, stars: 5, createdAt: t++, legacy: true });
+        }
+        for (const img of legacyIg) {
+            await addDoc(collection(db, 'testimoni'), { productId: 'ig', img, stars: 5, createdAt: t++, legacy: true });
+        }
+        btn.disabled = false; btn.textContent = 'Import Testimoni Lama (sekali saja)';
+        alert('Import selesai.');
+    });
+
+    // ===== TESTIMONI: RIWAYAT (realtime) =====
+    const testiRiwayat = document.getElementById('testiRiwayat');
+    showLoadingState(testiRiwayat);
+    onSnapshot(query(collection(db, 'testimoni'), orderBy('createdAt', 'desc')), (snap) => {
+        testiRiwayat.innerHTML = '';
+        if (snap.empty) { testiRiwayat.innerHTML = '<div class="empty-state">Belum ada riwayat.</div>'; return; }
+        snap.forEach(docSnap => {
+            const d = docSnap.data();
+            const item = document.createElement('div');
+            item.className = 'riwayat-item';
+            item.innerHTML = `
+                ${d.img ? `<img src="${d.img}" />` : ''}
+                <div class="riwayat-text">Produk: <b>${window.__productMap[d.productId] || d.productId}</b>${d.legacy ? ' <span style="color:#999;">(data lama)</span>' : ''}</div>
+                <div class="riwayat-text">Bintang: ${'⭐'.repeat(d.stars || 5)}</div>
+                <div class="riwayat-meta">${formatWaktu(d.createdAt)}</div>
+                <div class="riwayat-actions">
+                    <button class="btn small secondary" data-act="edit">Edit Bintang</button>
+                    <button class="btn small secondary" data-act="editfoto">Edit Foto</button>
+                    <button class="btn small danger" data-act="del">Hapus</button>
+                </div>
+                <input type="file" accept="image/*" style="display:none" data-act="fileinput" />
+            `;
+            item.querySelector('[data-act="edit"]').onclick = async () => {
+                const val = prompt('Ubah jumlah bintang (3-5):', d.stars || 5);
+                if (val === null) return;
+                let s = Math.min(5, Math.max(3, parseInt(val, 10) || 5));
+                await updateDoc(doc(db, 'testimoni', docSnap.id), { stars: s });
+            };
+            const testiFileInput = item.querySelector('[data-act="fileinput"]');
+            item.querySelector('[data-act="editfoto"]').onclick = () => testiFileInput.click();
+            testiFileInput.onchange = async () => {
+                const file = testiFileInput.files[0];
+                if (!file) return;
+                try {
+                    const resized = await withTimeout(fileToCompressedBase64(file), 20000, 'Proses gambar');
+                    const watermarked = await applyWatermark(resized);
+                    const url = await withTimeout(uploadImageToCloudinary(dataUrlToBlob(watermarked)), 20000, 'Upload gambar');
+                    await updateDoc(doc(db, 'testimoni', docSnap.id), { img: url });
+                } catch (e) {
+                    alert('Gagal mengganti foto: ' + e.message);
+                }
+            };
+            item.querySelector('[data-act="del"]').onclick = async () => {
+                if (!confirm('Hapus testimoni ini?')) return;
+                await deleteDoc(doc(db, 'testimoni', docSnap.id));
+            };
+            testiRiwayat.appendChild(item);
+        });
+    }, (err) => { console.warn('Gagal ambil data testimoni:', err); showErrorState(testiRiwayat, 'testimoni'); });
+
+    // ================================================================
+    // ===== FITUR STATUS (COMPOSER) =====
+    // ================================================================
+    const STATUS_TEXT_TEMPLATES = [
+        { id: 't1', bg: 'linear-gradient(135deg,#4b6cb7,#182848)' },
+        { id: 't2', bg: 'linear-gradient(135deg,#ff5f6d,#ffc371)' },
+        { id: 't3', bg: 'linear-gradient(135deg,#11998e,#38ef7d)' },
+        { id: 't4', bg: 'linear-gradient(135deg,#8e2de2,#4a00e0)' },
+        { id: 't5', bg: 'linear-gradient(135deg,#f7971e,#ffd200)' },
+        { id: 't6', bg: 'linear-gradient(135deg,#232526,#414345)' }
+    ];
+    let statusSelectedTemplate = 't1';
+    let statusPickedFile = null;
+    let statusPickedType = null; // 'image' | 'video' | 'text'
+
+    const statusPickOverlay = document.getElementById('statusPickOverlay');
+    const statusPreviewOverlay = document.getElementById('statusPreviewOverlay');
+    const statusPreviewTitle = document.getElementById('statusPreviewTitle');
+    const statusPreviewMediaBox = document.getElementById('statusPreviewMediaBox');
+    const statusCaptionInput = document.getElementById('statusCaptionInput');
+    const statusTextEditorBox = document.getElementById('statusTextEditorBox');
+    const statusTextEditorBg = document.getElementById('statusTextEditorBg');
+    const statusTextInput = document.getElementById('statusTextInput');
+    const statusTemplateRow = document.getElementById('statusTemplateRow');
+    const statusUploadProgress = document.getElementById('statusUploadProgress');
+    const btnUploadStatus = document.getElementById('btnUploadStatus');
+
+    document.getElementById('btnAddStatus').addEventListener('click', () => statusPickOverlay.classList.add('active'));
+    document.getElementById('statusPickCancel').addEventListener('click', () => statusPickOverlay.classList.remove('active'));
+    statusPickOverlay.addEventListener('click', (e) => { if (e.target === statusPickOverlay) statusPickOverlay.classList.remove('active'); });
+
+    document.getElementById('statusPickCamera').addEventListener('click', () => {
+        statusPickOverlay.classList.remove('active');
+        document.getElementById('statusCameraInput').click();
+    });
+    document.getElementById('statusPickGallery').addEventListener('click', () => {
+        statusPickOverlay.classList.remove('active');
+        document.getElementById('statusGalleryInput').click();
+    });
+
+    function renderTemplateRow() {
+        statusTemplateRow.innerHTML = STATUS_TEXT_TEMPLATES.map(t =>
+            `<div class="status-template-dot${t.id === statusSelectedTemplate ? ' selected' : ''}" data-t="${t.id}" style="background:${t.bg}"></div>`
+        ).join('');
+        statusTemplateRow.querySelectorAll('.status-template-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                statusSelectedTemplate = dot.dataset.t;
+                renderTemplateRow();
+                const tpl = STATUS_TEXT_TEMPLATES.find(t => t.id === statusSelectedTemplate);
+                statusTextEditorBg.style.background = tpl.bg;
+            });
+        });
+    }
+
+    function openStatusPreview(mode) {
+        statusPreviewMediaBox.innerHTML = '';
+        statusPreviewMediaBox.style.display = 'none';
+        statusCaptionInput.style.display = 'none';
+        statusCaptionInput.value = '';
+        statusTextEditorBox.style.display = 'none';
+        statusTextInput.value = '';
+
+        if (mode === 'text') {
+            statusPreviewTitle.textContent = 'Buat Status Teks';
+            statusTextEditorBox.style.display = 'block';
+            statusSelectedTemplate = 't1';
+            renderTemplateRow();
+            statusTextEditorBg.style.background = STATUS_TEXT_TEMPLATES[0].bg;
+        } else {
+            statusPreviewTitle.textContent = 'Pratinjau Status';
+            statusPreviewMediaBox.style.display = 'flex';
+            statusCaptionInput.style.display = 'block';
+            statusCaptionInput.placeholder = 'Tulis caption (opsional)...';
+            const url = URL.createObjectURL(statusPickedFile);
+            if (mode === 'video') {
+                statusPreviewMediaBox.innerHTML = `<video src="${url}" controls autoplay muted loop></video>`;
+            } else {
+                statusPreviewMediaBox.innerHTML = `<img src="${url}" />`;
+            }
+        }
+        statusUploadProgress.style.display = 'none';
+        statusPreviewOverlay.classList.add('active');
+    }
+
+    document.getElementById('statusPickText').addEventListener('click', () => {
+        statusPickOverlay.classList.remove('active');
+        statusPickedFile = null;
+        statusPickedType = 'text';
+        openStatusPreview('text');
+    });
+
+    document.getElementById('statusCameraInput').addEventListener('change', function () {
+        const f = this.files[0];
+        if (!f) return;
+        statusPickedFile = f;
+        statusPickedType = 'image';
+        openStatusPreview('image');
+        this.value = '';
+    });
+    document.getElementById('statusGalleryInput').addEventListener('change', function () {
+        const f = this.files[0];
+        if (!f) return;
+        statusPickedFile = f;
+        statusPickedType = f.type.startsWith('video') ? 'video' : 'image';
+        openStatusPreview(statusPickedType);
+        this.value = '';
+    });
+
+    document.getElementById('btnCancelStatusPreview').addEventListener('click', () => {
+        statusPreviewOverlay.classList.remove('active');
+        statusPickedFile = null; statusPickedType = null;
+    });
+
+    btnUploadStatus.addEventListener('click', async () => {
+        if (!statusPickedType) return;
+        if (statusPickedType === 'text' && !statusTextInput.value.trim()) { alert('Tulis dulu status teksnya.'); return; }
+
+        btnUploadStatus.disabled = true;
+        statusUploadProgress.style.display = 'block';
+        statusUploadProgress.textContent = 'Mengunggah...';
+
+        const createdAt = Date.now();
+        const expiresAt = createdAt + 24 * 60 * 60 * 1000; // 24 jam, kaya status WA
+        const docData = { createdAt, expiresAt, type: statusPickedType };
+
+        try {
+            if (statusPickedType === 'image') {
+                docData.mediaUrl = await fileToBase64IfAny(statusPickedFile);
+                if (statusCaptionInput.value.trim()) docData.caption = statusCaptionInput.value.trim();
+            } else if (statusPickedType === 'video') {
+                statusUploadProgress.textContent = 'Mengunggah video, mohon tunggu...';
+                docData.mediaUrl = await withTimeout(uploadVideoToCloudinary(statusPickedFile), 60000, 'Upload video');
+                if (statusCaptionInput.value.trim()) docData.caption = statusCaptionInput.value.trim();
+            } else {
+                docData.text = statusTextInput.value.trim();
+                docData.template = statusSelectedTemplate;
+            }
+            await withTimeout(addDoc(collection(db, 'statuses'), docData), 20000, 'Simpan status');
+            statusPreviewOverlay.classList.remove('active');
+            statusPickedFile = null; statusPickedType = null;
+        } catch (e) {
+            console.error('Gagal upload status:', e);
+            let msg = 'Gagal mengupload status: ' + e.message;
+            if (statusPickedType === 'video') msg += '\n\nCek koneksi internet kamu, lalu coba lagi. Kalau masih gagal, coba pakai video dengan ukuran lebih kecil.';
+            alert(msg);
+        }
+        btnUploadStatus.disabled = false;
+        statusUploadProgress.style.display = 'none';
+    });
+
+    // ===== DAFTAR STATUS AKTIF + HAPUS =====
+    const statusActiveList = document.getElementById('statusActiveList');
+    showLoadingState(statusActiveList);
+    onSnapshot(collection(db, 'statuses'), (snap) => {
+        const now = Date.now();
+        const all = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(s => !s.expiresAt || s.expiresAt > now);
+        all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        statusActiveList.innerHTML = all.map(s => {
+            let inner = '';
+            if (s.type === 'image') inner = `<img src="${s.mediaUrl}" />`;
+            else if (s.type === 'video') inner = `<video src="${s.mediaUrl}" muted></video>`;
+            else {
+                const tpl = STATUS_TEXT_TEMPLATES.find(t => t.id === s.template) || STATUS_TEXT_TEMPLATES[0];
+                inner = `<div class="status-thumb is-text" style="background:${tpl.bg};width:100%;height:100%;">${(s.text || '').slice(0, 40)}</div>`;
+            }
+            // dihitung per device (HP) yang nonton, bukan per-view — replay status di HP yang sama gak nambah angka
+            const viewCount = Array.isArray(s.viewedBy) ? s.viewedBy.length : 0;
+            return `<div>
+                <div class="status-thumb" data-id="${s.id}">${inner}<div class="status-thumb-del" data-del="${s.id}">✕</div></div>
+                <div class="status-view-count">👁 ${viewCount}</div>
+            </div>`;
+        }).join('');
+        if (!all.length) statusActiveList.innerHTML = '<div class="empty-state">Belum ada status aktif.</div>';
+        statusActiveList.querySelectorAll('[data-del]').forEach(btn => {
+            btn.onclick = async () => {
+                if (!confirm('Hapus status ini?')) return;
+                await deleteDoc(doc(db, 'statuses', btn.dataset.del));
+            };
+        });
+    }, (err) => { console.warn('Gagal ambil data statuses:', err); showErrorState(statusActiveList, 'status'); });
+    // ================================================================
+    (function pengunjungFeature() {
+      try {
+        const listView = document.getElementById('pengunjungListView');
+        const notifView = document.getElementById('pengunjungNotifView');
+        document.getElementById('btnPengunjungNotif').addEventListener('click', () => {
+            listView.style.display = 'none';
+            notifView.classList.add('active');
+            try { localStorage.setItem('pengunjungNotifLastSeen', String(Date.now())); } catch (e) {}
+            document.getElementById('pengunjungNotifBadge').style.display = 'none';
+        });
+        document.getElementById('btnBackPengunjungNotif').addEventListener('click', () => {
+            notifView.classList.remove('active');
+            listView.style.display = 'block';
+        });
+
+        const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        function fmtTanggal(ts) {
+            if (!ts) return '-';
+            const d = new Date(ts);
+            const jam = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+            return `${jam} — ${d.getDate()} ${BULAN[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        let sessionsData = [];
+        let pageViewsData = [];
+        let dailyStatsData = {}; // { 'YYYY-MM-DD': visits } — permanen, gak ikut kehapus
+        let summaryData = {}; // totalVisitsAllTime, totalNewVisitorsAllTime, hourly{}, pageCounts{} — permanen
+        let chartInstance = null;
+        let jamChartInstance = null;
+        function dk(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+
+        function render() {
+          try {
+            const now = Date.now();
+            const startHariIni = new Date(); startHariIni.setHours(0,0,0,0);
+            const startMinggu = new Date(startHariIni.getTime() - 6 * 86400000);
+            const startBulan = new Date(now); startBulan.setDate(1); startBulan.setHours(0,0,0,0);
+            const startTahun = new Date(now); startTahun.setMonth(0,1); startTahun.setHours(0,0,0,0);
+
+            // Statistik Hari Ini/Minggu/Bulan/Tahun dihitung dari dailyStats (counter permanen per-hari,
+            // ukurannya kecil jadi gak pernah dihapus) — BUKAN dari sessionsData mentah yang sekarang
+            // cuma disimpan 1 hari, biar angkanya tetap akurat walau data sesi lama udah dibersihin.
+            function sumDailyStatsFrom(startDate) {
+                let total = 0;
+                const cursor = new Date(startDate);
+                const end = new Date();
+                while (cursor <= end) {
+                    total += dailyStatsData[dk(cursor)] || 0;
+                    cursor.setDate(cursor.getDate() + 1);
+                }
+                return total;
+            }
+            document.getElementById('statHariIni').textContent = dailyStatsData[dk(startHariIni)] || 0;
+            document.getElementById('statMingguIni').textContent = sumDailyStatsFrom(startMinggu);
+            document.getElementById('statBulanIni').textContent = sumDailyStatsFrom(startBulan);
+            document.getElementById('statTahunIni').textContent = sumDailyStatsFrom(startTahun);
+            document.getElementById('statSemua').textContent = summaryData.totalVisitsAllTime || 0;
+
+            // sedang online: status online DAN masih ada heartbeat dalam 45 detik terakhir
+            // (ini tetap dari data sesi mentah karena butuh data real-time, bukan histori)
+            const onlineNow = sessionsData.filter(s => s.status === 'online' && (now - (s.lastSeen || s.masuk)) < 45000).length;
+            document.getElementById('statOnlineNow').textContent = onlineNow;
+
+            // Baru vs Lama: dari counter permanen (sepanjang masa), bukan dari sesi mentah yang dibersihin
+            const totalAllTime = summaryData.totalVisitsAllTime || 0;
+            const baru = summaryData.totalNewVisitorsAllTime || 0;
+            const lama = Math.max(0, totalAllTime - baru);
+            document.getElementById('statBaru').textContent = baru;
+            document.getElementById('statLama').textContent = lama;
+            document.getElementById('statBaruBar').style.width = totalAllTime ? (baru / totalAllTime * 100) + '%' : '0%';
+
+            // grafik 14 hari terakhir — dari dailyStats, bukan sessionsData mentah
+            const days = [];
+            for (let i = 13; i >= 0; i--) {
+                const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
+                days.push(d);
+            }
+            const chartLabels = days.map(d => d.getDate() + '/' + (d.getMonth()+1));
+            const chartData = days.map(d => dailyStatsData[dk(d)] || 0);
+            const ctx = document.getElementById('pengunjungChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: chartLabels, datasets: [{ label: 'Pengunjung', data: chartData, borderColor: '#0ea5e9', backgroundColor: 'rgba(14,165,233,0.15)', fill: true, tension: 0.3 }] },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                });
+            }
+
+            // jam ramai — dari counter permanen (sepanjang masa), bukan sessionsData mentah
+            const jamCount = new Array(24).fill(0);
+            for (let h = 0; h < 24; h++) jamCount[h] = (summaryData.hourly && summaryData.hourly[String(h)]) || 0;
+            const jamCtx = document.getElementById('pengunjungJamChart');
+            if (jamCtx && typeof Chart !== 'undefined') {
+                if (jamChartInstance) jamChartInstance.destroy();
+                jamChartInstance = new Chart(jamCtx, {
+                    type: 'bar',
+                    data: { labels: jamCount.map((_, i) => i + ':00'), datasets: [{ label: 'Kunjungan', data: jamCount, backgroundColor: '#0ea5e9' }] },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                });
+            }
+
+            // log kunjungan terbaru
+            const sorted = [...sessionsData].sort((a, b) => b.masuk - a.masuk).slice(0, 30);
+            document.getElementById('pengunjungLogList').innerHTML = sorted.map(s => `
+                <div class="pengunjung-log-item">
+                    <div class="pengunjung-log-top">
+                        <span class="pengunjung-log-dot ${s.status === 'online' ? 'online' : 'offline'}"></span>
+                        ${s.status === 'online' ? 'Online' : 'Offline'} ${s.isNew ? '· Baru' : '· Lama'}
+                    </div>
+                    <div class="pengunjung-log-sub">Perangkat: ${s.device || 'Tidak diketahui'}</div>
+                    <div class="pengunjung-log-sub">Masuk: ${fmtTanggal(s.masuk)}</div>
+                    <div class="pengunjung-log-sub">Keluar: ${s.keluar ? fmtTanggal(s.keluar) : '-'}</div>
+                </div>
+            `).join('') || '<div class="empty-state">Belum ada data pengunjung.</div>';
+
+            // notifikasi pengunjung baru (halaman baru, terpisah dari statistik)
+            const lastSeenNotif = Number(localStorage.getItem('pengunjungNotifLastSeen') || 0);
+            const unread = sessionsData.filter(s => s.masuk > lastSeenNotif).length;
+            const badge = document.getElementById('pengunjungNotifBadge');
+            if (unread > 0) { badge.textContent = unread; badge.style.display = 'flex'; } else { badge.style.display = 'none'; }
+            document.getElementById('pengunjungNotifList').innerHTML = sorted.map(s => `
+                <div class="pesan-bubble-row"><div class="pesan-bubble">
+                    <b>Pengunjung baru masuk</b><br/>
+                    Perangkat: ${s.device || 'Tidak diketahui'}<br/>
+                    Masuk: ${fmtTanggal(s.masuk)}<br/>
+                    Status: ${s.status === 'online' ? 'Online' : 'Offline'}<br/>
+                    Keluar: ${s.keluar ? fmtTanggal(s.keluar) : '-'}
+                </div></div>
+            `).join('') || '<div class="empty-state">Belum ada notifikasi.</div>';
+
+            // halaman paling sering dibuka — dari counter permanen (sepanjang masa),
+            // bukan visitorPageViews mentah yang sekarang cuma disimpan 1 hari
+            const pageCount = summaryData.pageCounts || {};
+            const topPages = Object.entries(pageCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
+            document.getElementById('topPagesList').innerHTML = topPages.map(([page, count]) => `
+                <div class="top-page-item"><span>${page}</span><span class="top-page-count">${count}x</span></div>
+            `).join('') || '<div class="empty-state">Belum ada data.</div>';
+          } catch (err) {
+            console.warn('Gagal render halaman Pengunjung:', err);
+          }
+        }
+
+        onSnapshot(collection(db, 'visitorSessions'), (snap) => {
+            sessionsData = snap.docs.map(d => d.data());
+            render();
+        }, (err) => console.warn('Gagal ambil data visitorSessions:', err));
+        onSnapshot(collection(db, 'visitorPageViews'), (snap) => {
+            pageViewsData = snap.docs.map(d => d.data());
+            render();
+        }, (err) => console.warn('Gagal ambil data visitorPageViews:', err));
+        onSnapshot(collection(db, 'dailyStats'), (snap) => {
+            const obj = {};
+            snap.forEach(d => { obj[d.id] = (d.data() || {}).visits || 0; });
+            dailyStatsData = obj;
+            render();
+        }, (err) => console.warn('Gagal ambil data dailyStats:', err));
+        onSnapshot(doc(db, 'stats', 'summary'), (snap) => {
+            summaryData = snap.exists() ? snap.data() : {};
+            render();
+        }, (err) => console.warn('Gagal ambil data stats/summary:', err));
+        // refresh angka "sedang online" tiap 15 detik (karena ambangnya berbasis waktu berjalan)
+        setInterval(render, 15000);
+      } catch (err) {
+        console.warn('Fitur Pengunjung gagal diinisialisasi, fitur lain tetap jalan normal:', err);
+      }
+    })();
+
+    // ================================================================
+    // ===== FITUR PESAN MASUK (INBOX MIRIP WHATSAPP) =====
+    // ================================================================
+    const chatContactList = document.getElementById('chatContactList');
+    const chatEmptyState = document.getElementById('chatEmptyState');
+    const pesanListView = document.getElementById('pesanListView');
+    const pesanThreadView = document.getElementById('pesanThreadView');
+    const pesanThreadName = document.getElementById('pesanThreadName');
+    const pesanThreadBody = document.getElementById('pesanThreadBody');
+    const pesanNavBadge = document.getElementById('pesanNavBadge');
+
+    let allPesanMasuk = [];
+    let currentThreadVisitorId = null;
+
+    function formatChatTime(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        const now = new Date();
+        const sameDay = d.toDateString() === now.toDateString();
+        if (sameDay) return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+    }
+
+    function messagePreviewText(m) {
+        if (m.type === 'text') return m.text || '';
+        if (m.type === 'emoji') return m.text || '😊';
+        if (m.type === 'image') return '📷 Foto';
+        if (m.type === 'voice') return '🎤 Pesan suara';
+        return 'Pesan';
+    }
+
+    function renderChatList() {
+        const groups = {};
+        allPesanMasuk.forEach(m => {
+            const key = m.visitorId || 'unknown';
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(m);
+        });
+        const contacts = Object.keys(groups).map(vid => {
+            const msgs = groups[vid].sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+            const last = msgs[msgs.length - 1];
+            return { vid, name: last.visitorName || 'Pengunjung', last, count: msgs.length };
+        });
+        contacts.sort((a, b) => (b.last.createdAt || 0) - (a.last.createdAt || 0));
+
+        chatEmptyState.style.display = contacts.length ? 'none' : 'block';
+        pesanNavBadge.style.display = contacts.length ? 'flex' : 'none';
+        if (contacts.length) pesanNavBadge.textContent = contacts.length > 99 ? '99+' : String(contacts.length);
+
+        chatContactList.innerHTML = contacts.map(c => `
+            <div class="chat-contact-item" data-vid="${c.vid}">
+                <div class="chat-contact-avatar">
+                    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                </div>
+                <div class="chat-contact-info">
+                    <div class="chat-contact-name">${c.name}</div>
+                    <div class="chat-contact-preview">${messagePreviewText(c.last).replace(/</g, '&lt;')}</div>
+                </div>
+                <div class="chat-contact-time">${formatChatTime(c.last.createdAt)}</div>
+            </div>
+        `).join('');
+
+        chatContactList.querySelectorAll('.chat-contact-item').forEach(el => {
+            el.addEventListener('click', () => openThread(el.dataset.vid));
+        });
+    }
+
+    function openThread(vid) {
+        currentThreadVisitorId = vid;
+        const msgs = allPesanMasuk.filter(m => m.visitorId === vid).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+        pesanThreadName.textContent = (msgs.length && msgs[msgs.length - 1].visitorName) || 'Pengunjung';
+        renderThreadBody(msgs);
+        pesanListView.style.display = 'none';
+        pesanThreadView.classList.add('active');
+    }
+
+    function renderThreadBody(msgs) {
+        pesanThreadBody.innerHTML = msgs.map(m => {
+            let content = '';
+            if (m.type === 'text') content = `<div class="pesan-bubble">${(m.text || '').replace(/</g, '&lt;')}</div>`;
+            else if (m.type === 'emoji') content = `<div class="pesan-bubble emoji-only">${m.text || ''}</div>`;
+            else if (m.type === 'image') content = `<div class="pesan-bubble"><img src="${m.img}" /></div>`;
+            else if (m.type === 'voice') content = `<div class="pesan-bubble"><audio controls src="${m.audio}"></audio></div>`;
+            else content = `<div class="pesan-bubble">Pesan</div>`;
+            return `<div class="pesan-bubble-row"><div>${content}<div class="pesan-bubble-time">${formatChatTime(m.createdAt)}</div></div></div>`;
+        }).join('');
+        pesanThreadBody.scrollTop = pesanThreadBody.scrollHeight;
+    }
+
+    document.getElementById('btnBackThread').addEventListener('click', () => {
+        pesanThreadView.classList.remove('active');
+        pesanListView.style.display = 'block';
+        currentThreadVisitorId = null;
+    });
+
+    showLoadingState(pesanListView);
+    onSnapshot(query(collection(db, 'pesanMasuk'), orderBy('createdAt', 'desc')), (snap) => {
+        allPesanMasuk = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderChatList();
+        if (currentThreadVisitorId) {
+            const msgs = allPesanMasuk.filter(m => m.visitorId === currentThreadVisitorId).sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+            renderThreadBody(msgs);
+        }
+    }, (err) => { console.warn('Gagal ambil data pesanMasuk:', err); showErrorState(pesanListView, 'pesan masuk'); });
+</script>
+<script>
+(function () {
+    // ===== SUB-TAB SWITCHER (Notifikasi V1/V2, Profil Status/Data) =====
+    document.querySelectorAll('.subtab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var group = btn.closest('.tab-page');
+            if (!group) return;
+            var target = btn.getAttribute('data-subtarget');
+            group.querySelectorAll('.subtab-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
+            group.querySelectorAll('.subtab-section').forEach(function (s) { s.classList.toggle('active', s.id === target); });
+        });
+    });
+
+    // ===== PRODUK: tombol Edit/Hapus muncul saat card ditekan =====
+    var produkListEl = document.getElementById('produkList');
+    if (produkListEl) {
+        produkListEl.addEventListener('click', function (e) {
+            var item = e.target.closest('.produk-item');
+            if (!item || !produkListEl.contains(item)) return;
+            if (e.target.closest('button')) return;
+            produkListEl.querySelectorAll('.produk-item.show-actions').forEach(function (el) {
+                if (el !== item) el.classList.remove('show-actions');
+            });
+            item.classList.toggle('show-actions');
+        });
+    }
+
+    // ===== PRODUK: search filter =====
+    var produkSearchInput = document.getElementById('produkSearchInput');
+    if (produkSearchInput && produkListEl) {
+        var applyProdukFilter = function () {
+            var q = produkSearchInput.value.trim().toLowerCase();
+            produkListEl.querySelectorAll('.produk-item').forEach(function (item) {
+                var nm = item.querySelector('.nm');
+                var text = nm ? nm.textContent.toLowerCase() : '';
+                item.style.display = (!q || text.indexOf(q) !== -1) ? '' : 'none';
+            });
+        };
+        produkSearchInput.addEventListener('input', applyProdukFilter);
+        new MutationObserver(applyProdukFilter).observe(produkListEl, { childList: true });
+    }
+
+    // ===== PESAN: search kontak =====
+    var chatContactListEl = document.getElementById('chatContactList');
+    var pesanSearchInput = document.getElementById('pesanSearchInput');
+    if (pesanSearchInput && chatContactListEl) {
+        var applyPesanFilter = function () {
+            var q = pesanSearchInput.value.trim().toLowerCase();
+            chatContactListEl.querySelectorAll('.chat-contact-item').forEach(function (item) {
+                var nameEl = item.querySelector('.chat-contact-name');
+                var text = nameEl ? nameEl.textContent.toLowerCase() : '';
+                item.style.display = (!q || text.indexOf(q) !== -1) ? '' : 'none';
+            });
+        };
+        pesanSearchInput.addEventListener('input', applyPesanFilter);
+        new MutationObserver(applyPesanFilter).observe(chatContactListEl, { childList: true });
+    }
+})();
+</script>
+</body></html>
