@@ -100,10 +100,10 @@
     function applyProfileToDom(p) {
         if (!p) return;
         if (p.avatar) {
-            const el = document.getElementById('profileAvatarImg'); if (el) el.src = p.avatar;
+            const el = document.getElementById('profileAvatarImg'); if (el) { el.style.display = ''; el.src = p.avatar; }
             const fav = document.getElementById('dynamicFavicon'); if (fav) fav.href = p.avatar;
         }
-        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) el.src = p.banner; }
+        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) { el.style.display = ''; el.src = p.banner; } }
         if (p.nama) { const el = document.getElementById('profileNameText'); if (el) el.textContent = p.nama; }
         if (p.bio) { const el = document.getElementById('profileBioText'); if (el) el.textContent = p.bio; }
         if (p.whatsapp) {
