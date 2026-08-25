@@ -582,7 +582,7 @@
     window.getExtraTestimoni = function (productDbId) {
         const key = productKeyMap[productDbId];
 
-        const own = (window.__testimoniData[key] || []).filter(t => !t.legacy)
+        const own = (window.__testimoniData[key] || [])
             .map(t => ({ ...t, productLabel: productNameMap[key] }));
         const borrowed = [];
         Object.keys(window.__testimoniData).forEach(k => {
@@ -612,16 +612,25 @@
 
     function checkDeepLinkProduct() {
         if (window.__deepLinkHandled) return;
-        const m = location.pathname.match(/^\/detail\/([^/]+)\/?$/);
+        const m = location.pathname.match(/^\/detail\/([^/]+)(?:\/([^/]+))?\/?$/);
         if (!m) { window.__deepLinkHandled = true; return; }
         const slug = decodeURIComponent(m[1]);
+        const sub = m[2] ? decodeURIComponent(m[2]) : null;
         const id = window.productKeyToId && window.productKeyToId[slug];
-        if (id && window.products[id] && window.openProduct) {
-            window.__deepLinkHandled = true;
-            window.openProduct(id, { pushUrl: false });
+        if (!id || !window.products[id]) {
+            // Produk belum ketemu (data belum sampai dari Firestore), coba lagi
+            // di pemanggilan berikutnya (saat snapshot berikutnya datang).
+            return;
         }
-        // Kalau produk belum ketemu (data belum sampai dari Firestore), biarkan
-        // dicoba lagi di pemanggilan berikutnya (saat snapshot berikutnya datang).
+        window.__deepLinkHandled = true;
+        window.openProduct(id, { pushUrl: false });
+        if (sub === 'tambahan' && window.openAddonSheet) {
+            window.openAddonSheet({ pushUrl: false });
+        } else if (sub === 'metode' && window.openMethodSheet) {
+            window.openMethodSheet({ pushUrl: false });
+        } else if (sub === 'pembayaran' && window.openPayment) {
+            window.openPayment({ pushUrl: false });
+        }
     }
 
     try {
