@@ -72,7 +72,8 @@
         return Number(String(str || '').replace(/[^\d]/g, '')) || 0;
     }
 
-    function openAddonSheet() {
+    function openAddonSheet(opts) {
+        opts = opts || {};
         const data = products[1];
         const addon = data.addon;
         addonSelected = false;
@@ -90,12 +91,23 @@
         if (fill) fill.classList.remove('run');
         addonSheetOverlay.classList.add('active');
         addonSheet.classList.add('active');
+
+        const slug = data.slug || data.key || 1;
+        const url = '/detail/' + encodeURIComponent(slug) + '/tambahan';
+        const state = { page: 'addon', productId: 1 };
+        if (opts.pushUrl === false) {
+            history.replaceState(state, '', url);
+        } else {
+            history.pushState(state, '', url);
+        }
     }
+    window.openAddonSheet = openAddonSheet;
 
     function closeAddonSheet() {
         addonSheetOverlay.classList.remove('active');
         addonSheet.classList.remove('active');
     }
+    window.closeAddonSheet = closeAddonSheet;
 
     addonCard.addEventListener('click', function() {
         addonSelected = !addonSelected;
@@ -108,7 +120,10 @@
         btnLanjutkanAddon.textContent = `Lanjutkan • ${formatRp(total)}`;
     });
 
-    addonSheetOverlay.addEventListener('click', closeAddonSheet);
+    addonSheetOverlay.addEventListener('click', function() {
+        if (history.state && history.state.page === 'addon') history.back();
+        else closeAddonSheet();
+    });
 
     btnLanjutkanAddon.addEventListener('click', function() {
         const data = products[1];

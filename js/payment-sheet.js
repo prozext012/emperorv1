@@ -10,7 +10,7 @@
 
     const btnBuktiWa = document.getElementById('btnBuktiWa');
 
-    function openPayment() {
+    function openPayment(opts) {
 
         let waText;
         const isSocialProduct = products[currentProductId] && (products[currentProductId].type === 'instagram' || products[currentProductId].type === 'tiktok');
@@ -38,8 +38,19 @@
         }
 
         showPaymentPage();
-        history.pushState({ page: 'payment' }, '');
+
+        opts = opts || {};
+        const data = products[currentProductId];
+        const slug = (data && (data.slug || data.key)) || currentProductId;
+        const url = '/detail/' + encodeURIComponent(slug) + '/pembayaran';
+        const state = { page: 'payment', productId: currentProductId };
+        if (opts.pushUrl === false) {
+            history.replaceState(state, '', url);
+        } else {
+            history.pushState(state, '', url);
+        }
     }
+    window.openPayment = openPayment;
 
     pageProduct.addEventListener('scroll', function() {
         const scrollY = this.scrollTop;
@@ -71,7 +82,8 @@
     const btnLanjutkanPayment = document.getElementById('btnLanjutkanPayment');
     const methodOptions = document.querySelectorAll('.method-option:not(.disabled)');
 
-    function openMethodSheet() {
+    function openMethodSheet(opts) {
+        opts = opts || {};
 
         if (!window.__productsSyncedFromServer) {
             showToast('Menyinkronkan harga terbaru, coba lagi sebentar...');
@@ -80,7 +92,7 @@
                 tries++;
                 if (window.__productsSyncedFromServer) {
                     clearInterval(waitSync);
-                    openMethodSheet();
+                    openMethodSheet(opts);
                 } else if (tries > 20) {
                     clearInterval(waitSync);
                     showToast('Koneksi lambat, coba refresh halaman');
@@ -96,12 +108,24 @@
 
         sheetOverlay.classList.add('active');
         paymentMethodSheet.classList.add('active');
+
+        const data = products[currentProductId];
+        const slug = (data && (data.slug || data.key)) || currentProductId;
+        const url = '/detail/' + encodeURIComponent(slug) + '/metode';
+        const state = { page: 'method', productId: currentProductId };
+        if (opts.pushUrl === false) {
+            history.replaceState(state, '', url);
+        } else {
+            history.pushState(state, '', url);
+        }
     }
+    window.openMethodSheet = openMethodSheet;
 
     function closeMethodSheet() {
         sheetOverlay.classList.remove('active');
         paymentMethodSheet.classList.remove('active');
     }
+    window.closeMethodSheet = closeMethodSheet;
 
     methodOptions.forEach(opt => {
         opt.addEventListener('click', function() {
@@ -111,5 +135,8 @@
         });
     });
 
-    sheetOverlay.addEventListener('click', closeMethodSheet);
+    sheetOverlay.addEventListener('click', function() {
+        if (history.state && history.state.page === 'method') history.back();
+        else closeMethodSheet();
+    });
 

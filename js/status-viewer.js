@@ -221,6 +221,9 @@
         const list = window.__statusData || [];
         const data = list[i];
         if (!data) { closeStatusViewer(); return; }
+        if (data.id) {
+            history.replaceState({ page: 'status', statusId: data.id }, '', '/status/' + encodeURIComponent(data.id));
+        }
         if (data.id && window.__recordStatusView) window.__recordStatusView(data.id);
         stopAdvanceTimer();
         clearMedia();
@@ -378,16 +381,21 @@
         if (window.__statusCurrentVideo) window.__statusCurrentVideo.play().catch(() => {});
     }
 
-    window.openStatusViewer = function () {
+    window.openStatusViewer = function (startIndex, opts) {
         const list = window.__statusData || [];
         if (!list.length) return;
-        statusIndex = 0;
+        opts = opts || {};
+        statusIndex = typeof startIndex === 'number' ? startIndex : 0;
         renderProgressRow();
         pageStatus.classList.add('active');
         document.body.style.overflow = 'hidden';
         if (window.markStatusHeaderNotif) window.markStatusHeaderNotif();
-        showSegment(0);
-        history.pushState({ page: 'status' }, '');
+        if (opts.pushUrl === false) {
+            history.replaceState({ page: 'status' }, '');
+        } else {
+            history.pushState({ page: 'status' }, '');
+        }
+        showSegment(statusIndex);
     };
 
     function closeStatusViewer() {
