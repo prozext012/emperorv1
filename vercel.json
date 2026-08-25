@@ -1,5 +1,7 @@
 {
   "rewrites": [
-    { "source": "/detail/:slug", "destination": "/index.html" }
+    { "source": "/detail/:slug", "destination": "/index.html" },
+    { "source": "/detail/:slug/:sub", "destination": "/index.html" },
+    { "source": "/status/:id", "destination": "/index.html" }
   ]
 }

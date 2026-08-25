@@ -1,3 +1,4 @@
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, onSnapshot, query, orderBy, doc, setDoc, addDoc, updateDoc, arrayUnion, deleteDoc, getDocs, where, increment, writeBatch, limit } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -369,12 +370,28 @@
         document.querySelectorAll('.avatar-ring').forEach(el => el.classList.toggle('has-status', active));
     }
 
+    function checkDeepLinkStatus() {
+        if (window.__statusDeepLinkHandled) return;
+        const m = location.pathname.match(/^\/status\/([^/]+)\/?$/);
+        if (!m) { window.__statusDeepLinkHandled = true; return; }
+        const statusId = decodeURIComponent(m[1]);
+        const list = window.__statusData || [];
+        const idx = list.findIndex(s => s.id === statusId);
+        if (idx >= 0 && window.openStatusViewer) {
+            window.__statusDeepLinkHandled = true;
+            window.openStatusViewer(idx, { pushUrl: false });
+        }
+        // Kalau status belum ketemu (data belum sampai dari Firestore atau sudah
+        // kedaluwarsa), biarkan dicoba lagi di pemanggilan berikutnya.
+    }
+
     try {
         const cachedStatus = JSON.parse(localStorage.getItem('cachedStatusData') || 'null');
         if (Array.isArray(cachedStatus)) {
             const now0 = Date.now();
             window.__statusData = cachedStatus.filter(s => !s.expiresAt || s.expiresAt > now0);
             applyStatusRing();
+            checkDeepLinkStatus();
         }
     } catch (e) {}
     onSnapshot(collection(db, 'statuses'), (snap) => {
@@ -384,6 +401,7 @@
         applyStatusRing();
         try { localStorage.setItem('cachedStatusData', JSON.stringify(all)); } catch (e) {}
         if (window.__onStatusDataReady) window.__onStatusDataReady();
+        checkDeepLinkStatus();
     });
 
     function getVisitorId() {
