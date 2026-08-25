@@ -1,70 +1,159 @@
-# 🛍️ dixzSTORE — Web Kasir & Warung
+<div align="center">
 
-> Sistem kasir & etalase online, real-time sync pakai Firebase Firestore + Cloudinary buat semua media.
+# 🛒 dixzSTORE — Web Utama
 
-**Live:** [dixz-vip.vercel.app](https://dixz-vip.vercel.app)
+### Etalase toko online real-time berbasis Firebase
 
----
+Katalog produk, checkout, status/story ala WhatsApp, dan live chat pelanggan —
+dibangun murni HTML/CSS/JavaScript tanpa framework berat.
 
-## 📦 Soal Struktur Folder Ini
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)](https://firebase.google.com)
+[![Cloudinary](https://img.shields.io/badge/Media-Cloudinary-3448C5?style=flat-square&logo=cloudinary&logoColor=white)](https://cloudinary.com)
+[![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
+[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#)
 
-Ya, ini emang sengaja dibikin berantakan 😁 3 file inti web ini (`style.css`, `script.js`, `firabase.js`) **dipecah jadi 18 potongan file**, nama & folder-nya diacak (gak ada hubungan sama isinya), ditaruh di cabang folder yang beda arah dan dalam:
-
-- **`style.css`** → 1 file, disamarkan namanya, ditaruh 4 level dalam
-- **`script.js`** → dipecah jadi **8 potongan** `.js`, dipanggil lewat 8 tag `<script>` berurutan di `index.html`. Ini "classic script" biasa, jadi semua potongan otomatis nyambung balik lewat scope global browser — asal urutan tag-nya gak diubah.
-- **`firabase.js`** → dipecah jadi **9 potongan** `.mjs` (ES Module), saling terhubung lewat `import`/`export` eksplisit antar file (bukan cuma numpuk doang) — supaya kalau salah satu potongan hilang pas di-*clone* asal-asalan, error-nya langsung ketauan (bukan diem-diem salah harga/salah data).
-
-**Kenapa direkayasa serumit ini?** Supaya kalau ada yang asal *copy-paste*/`git clone` sebagian doang (skip folder, ambil cuma yang "kelihatan penting"), web-nya **gak akan jalan sama sekali** — bukan cuma tampilannya rusak, tapi bakal blank/error total, jadi ketauan ada yang kurang.
-
-> ⚠️ **Catatan jujur:** ini tetap bukan proteksi anti-pencurian yang sesungguhnya. Begitu web jalan di browser pengunjung, SEMUA potongan file (di path manapun) otomatis ke-download — orang yang niat serius pakai DevTools/Network tab tetap bisa kumpulin semuanya. Proteksi yang benar-benar menutup celah ada di bagian [🔒 Keamanan](#-keamanan) di bawah. Anggap struktur ini sebagai "pagar duri" ekstra buat nyusahin yang asal comot, bukan gembok utama.
-
-### ✅ Sudah divalidasi ketat sebelum di-zip
-
-Karena mecah file serumit ini gampang bikin kode putus nyambung (apalagi `firabase.js` yang modul ES, punya variabel `db` dkk yang dipakai di banyak bagian), setiap potongan sudah melalui:
-
-1. **Cek sintaks** (`node --check`) di tiap file, satu per satu
-2. **Analisa jalur variabel** — dicek variabel/fungsi mana yang dipakai lintas-file, otomatis ditambahin `export`/`import` yang presisi
-3. **Tes eksekusi sungguhan** — semua potongan dijalankan beneran secara berurutan (pakai Node + SDK Firebase tiruan), dipastikan tidak ada "variabel tidak ditemukan" sama sekali
-4. **Rekonstruksi ulang** — semua potongan digabung lagi, dicocokkan persis sama file aslinya
+</div>
 
 ---
 
-## 🚀 Cara Deploy ke Vercel (lewat GitHub)
+## 📖 Daftar Isi
 
-1. **Push repo ini ke GitHub** (private repo disarankan):
-   ```bash
-   git init
-   git add .
-   git commit -m "init: dixzSTORE"
-   git branch -M main
-   git remote add origin https://github.com/USERNAME/NAMA-REPO.git
-   git push -u origin main
-   ```
-2. **Buka [vercel.com](https://vercel.com) → New Project → Import** repo ini.
-3. Vercel otomatis kedeteksi sebagai **static site** — biarin Build Command & Output Directory kosong/default.
-4. Klik **Deploy**. Semua path di `index.html` udah lengkap mengarah ke lokasi potongan file yang benar, jadi gak perlu setting tambahan apapun.
-
-> ⚠️ **JANGAN** ubah/pindahkan nama file atau folder manapun di dalam `assets/` secara manual — semua path di `index.html` sudah presisi mengarah ke lokasi & nama file yang persis seperti ini. Kalau perlu reorganisasi ulang, minta dibuatkan versi baru daripada ngedit manual.
+- [Tentang Proyek](#-tentang-proyek)
+- [Fitur](#-fitur)
+- [Struktur Folder](#-struktur-folder)
+- [Tumpukan Teknologi](#-tumpukan-teknologi)
+- [Instalasi & Setup](#-instalasi--setup)
+- [Keamanan](#-keamanan)
+- [Repo Terkait](#-repo-terkait)
 
 ---
 
-## 🔒 Keamanan
+## 🧾 Tentang Proyek
 
-Proteksi yang **beneran** menutup celah (bukan cuma struktur folder):
+Repo ini adalah **halaman publik toko dixzSTORE** — tempat pelanggan melihat produk,
+melakukan checkout, melihat status/story, dan chat langsung dengan admin.
 
-- ✅ **Firestore Security Rules** sudah dipasang & dipublish
-- ✅ **API key Firebase dibatasi per-domain** (`dixz-vip.vercel.app/*`) via Google Cloud Console — kunci gak bisa dipanggil dari domain lain walau kecolongan
-- ✅ Semua gambar disimpan di **Cloudinary**, bukan base64 di Firestore
-- ✅ Checkout **dikunci** sampai harga tersinkron dari server (anti bug harga basi)
-- ✅ Data awal produk **tidak lagi hardcoded** di source
-
----
-
-## 🗂️ File yang **TIDAK** ikut di-hosting publik
-
-- `legacy_products_backup.json` — backup data produk lama, dipakai manual lewat tombol import di admin, **jangan** ikut di-push ke repo
-- `firestore.rules.txt` — dokumentasi rules, sudah dipublish langsung di Firebase Console
+Semua konten (produk, testimoni, notifikasi, profil toko) diambil secara **real-time**
+dari Firebase Firestore, dan dikelola dari repo terpisah [`kaisarv2`](#-repo-terkait)
+(panel admin) — begitu admin mengubah data, halaman ini otomatis update tanpa reload.
 
 ---
 
-Made with 🔥 Firebase, ☁️ Cloudinary, dan niat jahil yang sangat terstruktur~
+## ✨ Fitur
+
+- 📦 **Katalog produk** — grid produk dinamis, sinkron real-time dari Firestore
+- 💳 **Checkout & pembayaran** — modal sheet untuk proses transaksi
+- 📸 **Status/story** — ala WhatsApp, auto-expire setelah 24 jam
+- 💬 **Live chat** — kirim pesan langsung ke admin
+- ⭐ **Slider testimoni** — testimoni pelanggan berjalan otomatis
+- 🔔 **Notifikasi berjalan** — running text info promo/pengumuman
+- 🌐 **Profil toko dinamis** — foto, banner, bio tersinkron dari admin
+- 📊 **Tracking pengunjung** — sesi & halaman yang dilihat, terekam otomatis
+- 🧹 **Auto-cleanup** — data lama (status kedaluwarsa, log) dibersihkan otomatis
+
+---
+
+## 📁 Struktur Folder
+
+```
+kaisarv1/
+├── index.html               # Halaman utama toko
+├── firabase.js                # Inisialisasi Firebase & seluruh logic halaman
+│
+├── css/
+│   ├── base-reset.css           # Reset & base style
+│   ├── checkout-sheet.css         # Modal checkout
+│   ├── produk-payment.css          # Kartu produk & pembayaran
+│   └── status-story.css             # Tampilan status/story
+│
+└── js/
+    ├── addon-ig-sheet.js          # Sheet tambahan bergaya Instagram
+    ├── ig-close.js                 # Handler tombol close
+    ├── navigasi-halaman.js          # Navigasi antar halaman
+    ├── payment-sheet.js               # Logic sheet pembayaran
+    ├── produk-grid.js                  # Render grid produk
+    ├── slider-testimoni.js              # Slider testimoni
+    ├── status-init.js                    # Inisialisasi status/story
+    └── status-viewer.js                   # Viewer status/story
+```
+
+---
+
+## 🛠️ Tumpukan Teknologi
+
+| Kategori | Teknologi |
+|---|---|
+| **Frontend** | HTML5, CSS3, Vanilla JavaScript (ES Modules) |
+| **Database** | Firebase Firestore (real-time) |
+| **Media** | Cloudinary (gambar & video produk/status) |
+| **Hosting** | Vercel |
+
+---
+
+## 🚀 Instalasi & Setup
+
+### 1. Clone repository
+```bash
+git clone <url-repo-kaisarv1>
+cd kaisarv1
+```
+
+### 2. Konfigurasi Firebase
+Salin config project Firebase (sama dengan yang dipakai di `kaisarv2`) ke `firabase.js`:
+
+```js
+const firebaseConfig = {
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: "xxxxxxxxxxx.firebaseapp.com",
+  projectId: "xxxxxxxxxxx",
+  storageBucket: "xxxxxxxxxxx.firebasestorage.app",
+  messagingSenderId: "xxxxxxxxxxx",
+  appId: "xxxxxxxxxxx"
+};
+```
+
+### 3. Jalankan secara lokal
+```bash
+npx serve .
+```
+
+### 4. Deploy
+Deploy folder ini sebagai project Vercel terpisah, arahkan ke domain:
+```
+dixz-vip.vercel.app
+```
+
+---
+
+## 🔐 Keamanan
+
+- 🔑 Kunci API Firebase dibatasi hanya untuk domain resmi (**HTTP referrer restriction**
+  di Google Cloud Console)
+- 📜 Semua baca/tulis data divalidasi ulang oleh **Firestore Security Rules**
+  (dikelola bersama di sisi project Firebase) — publik hanya bisa baca data non-sensitif
+  dan menulis data terbatas (chat, tracking kunjungan)
+- 🕵️ Data pengunjung (`visitorSessions`, `visitorPageViews`) **tidak bisa dibaca publik**,
+  hanya bisa ditulis (satu arah)
+
+> ⚠️ `apiKey` yang terlihat di source code adalah hal normal untuk aplikasi Firebase
+> berbasis client — perlindungan sesungguhnya ada di Security Rules, bukan dengan
+> menyembunyikan config.
+
+---
+
+## 🔗 Repo Terkait
+
+| Repo | Fungsi | Domain |
+|---|---|---|
+| **`kaisarv1`** *(repo ini)* | Web utama / etalase toko | `dixz-vip.vercel.app` |
+| [`kaisarv2`](#) | Panel admin & dashboard | `notifikasi-dixzvip.vercel.app` |
+
+Kedua repo berbagi satu database Firebase yang sama secara real-time.
+
+---
+
+<div align="center">
+
+Dibuat dengan ❤️ untuk **dixzSTORE**
+
+</div>
