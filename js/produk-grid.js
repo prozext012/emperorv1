@@ -21,8 +21,15 @@
     let products = {};
     window.products = products;
     window.productKeyToId = {};
-    Object.keys(products).forEach(id => { window.productKeyToId[products[id].key] = id; });
     const productGrid = document.getElementById('productGrid');
+
+    function slugify(str) {
+        return String(str || '')
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
 
     function normalizeGridPriceLabel(label) {
         if (!label) return '';
@@ -35,6 +42,12 @@
     }
     function renderProductGrid() {
         if (!productGrid) return;
+        window.productKeyToId = {};
+        Object.keys(products).forEach(id => {
+            const slug = products[id].key ? slugify(products[id].key) : slugify(products[id].name) || id;
+            products[id].slug = slug;
+            window.productKeyToId[slug] = id;
+        });
         const ids = Object.keys(products).sort((a, b) => (products[a].order ?? 999) - (products[b].order ?? 999));
         productGrid.innerHTML = ids.map(id => {
             const p = products[id];

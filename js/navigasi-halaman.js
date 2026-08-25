@@ -37,9 +37,10 @@
         }
     }
 
-    function openProduct(productId) {
+    function openProduct(productId, opts) {
         const data = products[productId];
         if (!data) return;
+        opts = opts || {};
 
         currentProductId = productId;
 
@@ -86,8 +87,17 @@
         buildSlider(data.mainImages || []);
         showProductPage();
         if (window.__trackPageView) window.__trackPageView('Produk: ' + data.name);
-        history.pushState({ page: 'product' }, '');
+
+        const slug = data.slug || data.key || productId;
+        const url = '/detail/' + encodeURIComponent(slug);
+        const state = { page: 'product', productId: productId };
+        if (opts.pushUrl === false) {
+            history.replaceState(state, '', url);
+        } else {
+            history.pushState(state, '', url);
+        }
     }
+    window.openProduct = openProduct;
 
     const fabWa = document.getElementById('fabWa');
 
@@ -99,6 +109,7 @@
         document.body.style.overflow = '';
         currentProductId = null;
         if (fabWa) fabWa.style.display = 'flex';
+        if (location.pathname !== '/') history.replaceState({ page: 'main' }, '', '/');
     }
 
     function showNotifPage() {

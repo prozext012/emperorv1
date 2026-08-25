@@ -14,7 +14,11 @@
         if (state && state.page === 'payment') {
             showPaymentPage();
         } else if (state && state.page === 'product') {
-            showProductPage();
+            if (state.productId && state.productId !== currentProductId && window.openProduct) {
+                window.openProduct(state.productId, { pushUrl: false });
+            } else {
+                showProductPage();
+            }
         } else if (state && state.page === 'notif') {
             showNotifPage();
         } else {
