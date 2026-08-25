@@ -100,10 +100,10 @@
     function applyProfileToDom(p) {
         if (!p) return;
         if (p.avatar) {
-            const el = document.getElementById('profileAvatarImg'); if (el) { el.style.display = ''; el.src = p.avatar; }
+            const el = document.getElementById('profileAvatarImg'); if (el) el.src = p.avatar;
             const fav = document.getElementById('dynamicFavicon'); if (fav) fav.href = p.avatar;
         }
-        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) { el.style.display = ''; el.src = p.banner; } }
+        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) el.src = p.banner; }
         if (p.nama) { const el = document.getElementById('profileNameText'); if (el) el.textContent = p.nama; }
         if (p.bio) { const el = document.getElementById('profileBioText'); if (el) el.textContent = p.bio; }
         if (p.whatsapp) {
@@ -593,11 +593,26 @@
         return 'Rp ' + Math.round(n).toLocaleString('id-ID');
     }
 
+    function checkDeepLinkProduct() {
+        if (window.__deepLinkHandled) return;
+        const m = location.pathname.match(/^\/detail\/([^/]+)\/?$/);
+        if (!m) { window.__deepLinkHandled = true; return; }
+        const slug = decodeURIComponent(m[1]);
+        const id = window.productKeyToId && window.productKeyToId[slug];
+        if (id && window.products[id] && window.openProduct) {
+            window.__deepLinkHandled = true;
+            window.openProduct(id, { pushUrl: false });
+        }
+        // Kalau produk belum ketemu (data belum sampai dari Firestore), biarkan
+        // dicoba lagi di pemanggilan berikutnya (saat snapshot berikutnya datang).
+    }
+
     try {
         const cachedProducts = JSON.parse(localStorage.getItem('cachedProducts') || 'null');
         if (cachedProducts && window.products) {
             Object.keys(cachedProducts).forEach(id => { window.products[id] = cachedProducts[id]; });
             if (window.renderProductGrid) window.renderProductGrid();
+            checkDeepLinkProduct();
         }
     } catch (e) {}
     onSnapshot(collection(db, 'products'), { includeMetadataChanges: true }, (snap) => {
@@ -679,4 +694,5 @@
             } catch (e) {}
         }
         if (changed && window.renderProductGrid) window.renderProductGrid();
+        checkDeepLinkProduct();
     });
