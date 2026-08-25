@@ -1,4 +1,3 @@
-
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, onSnapshot, query, orderBy, doc, setDoc, addDoc, updateDoc, arrayUnion, deleteDoc, getDocs, where, increment, writeBatch, limit } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -100,10 +99,10 @@
     function applyProfileToDom(p) {
         if (!p) return;
         if (p.avatar) {
-            const el = document.getElementById('profileAvatarImg'); if (el) el.src = p.avatar;
+            const el = document.getElementById('profileAvatarImg'); if (el) { el.style.display = ''; el.src = p.avatar; }
             const fav = document.getElementById('dynamicFavicon'); if (fav) fav.href = p.avatar;
         }
-        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) el.src = p.banner; }
+        if (p.banner) { const el = document.getElementById('profileCoverImg'); if (el) { el.style.display = ''; el.src = p.banner; } }
         if (p.nama) { const el = document.getElementById('profileNameText'); if (el) el.textContent = p.nama; }
         if (p.bio) { const el = document.getElementById('profileBioText'); if (el) el.textContent = p.bio; }
         if (p.whatsapp) {
