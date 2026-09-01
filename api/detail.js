@@ -22,6 +22,18 @@ function escapeHtml(str) {
         .replace(/"/g, '&quot;');
 }
 
+function formatRp(n) {
+    n = Number(n) || 0;
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+}
+
+function fsNum(field) {
+    if (!field) return 0;
+    if (field.integerValue !== undefined) return Number(field.integerValue);
+    if (field.doubleValue !== undefined) return Number(field.doubleValue);
+    return 0;
+}
+
 async function fetchProductBySlug(slug) {
     const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:runQuery?key=${API_KEY}`;
     const body = {
@@ -57,12 +69,26 @@ async function fetchProductBySlug(slug) {
         const av = fields[f] && fields[f].arrayValue && fields[f].arrayValue.values;
         return Array.isArray(av) ? av.map(v => v.stringValue).filter(Boolean) : [];
     };
-    const mainImages = getArr('mainImages');
+
+    const type = getStr('type') || 'digital';
+    const images = getArr('images');
     const gallery = getArr('gallery');
+
+    let price = '';
+    if (type === 'digital') {
+        const adminFee = fsNum(fields.adminFee);
+        price = (getStr('priceMode') === 'coret')
+            ? formatRp(fsNum(fields.priceSale))
+            : formatRp(fsNum(fields.priceNormal));
+    } else {
+        // instagram / tiktok: pakai label harga grid kalau ada (misal "Mulai Rp 5.000")
+        price = getStr('gridPriceLabel');
+    }
+
     return {
         name: getStr('name') || SITE_NAME,
-        price: getStr('price'),
-        image: mainImages[0] || gallery[0] || DEFAULT_IMAGE
+        price,
+        image: images[0] || gallery[0] || DEFAULT_IMAGE
     };
 }
 
