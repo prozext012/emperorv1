@@ -9,7 +9,7 @@
 
 const PROJECT_ID = 'dixzstore-bbb02';
 const API_KEY = 'AIzaSyAYoOQXd-C8Nf11H1u1WJhjxBwchV7Uhwc';
-const DEFAULT_IMAGE = 'https://i.ibb.co.com/ZzvfT80Z/AIRetouch-20260901-170622250.png';
+const DEFAULT_IMAGE = 'https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg';
 const SITE_NAME = 'Andika Store';
 
 const BOT_UA_PATTERN = /whatsapp|telegrambot|facebookexternalhit|facebot|twitterbot|linkedinbot|slackbot|discordbot|pinterest|redditbot|skypeuripreview|vkshare|line\/|embedly|quora link preview|w3c_validator|google-pagerenderer|bot/i;
