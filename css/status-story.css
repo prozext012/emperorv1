@@ -25,7 +25,10 @@
     width: 100%;
     height: 100%;
 }
-.avatar-ring.has-status:active { transform: scale(0.97); }
+.avatar-ring.has-status:active {
+    transform: scale(0.94);
+    transition: transform 0.35s var(--ease-bounce);
+}
 
 /* ===== HALAMAN STATUS (STORY VIEWER) ===== */
 .page-status {
@@ -83,6 +86,11 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     cursor: pointer;
+    transition: transform 0.35s var(--ease-bounce), background 0.25s var(--ease-smooth);
+}
+.status-header-notif:active {
+    transform: scale(0.85) rotate(-8deg);
+    background: rgba(255,255,255,0.22);
 }
 .status-header-notif svg { width: 16px; height: 16px; fill: #fff; }
 .status-header-notif .notif-overlay-preview,
@@ -98,6 +106,11 @@
     font-size: 1rem;
     flex-shrink: 0;
     cursor: pointer;
+    transition: transform 0.35s var(--ease-bounce), background 0.25s var(--ease-smooth);
+}
+.status-header-close:active {
+    transform: scale(0.82) rotate(90deg);
+    background: rgba(255,255,255,0.22);
 }
 
 .status-media-wrap {
@@ -220,6 +233,11 @@
     cursor: pointer;
     border: none;
     position: relative;
+    transition: transform 0.35s var(--ease-bounce), background 0.25s var(--ease-smooth);
+}
+.status-icon-btn:active {
+    transform: scale(0.82);
+    background: rgba(255,255,255,0.22);
 }
 .status-icon-btn svg { width: 17px; height: 17px; fill: #fff; }
 .status-btn-mic.recording { background: var(--soft-red); }
@@ -235,9 +253,23 @@
     border-radius: 20px;
     padding: 8px 10px;
     box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    animation: statusEmojiPopIn 0.35s var(--ease-bounce);
+}
+@keyframes statusEmojiPopIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.85); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .status-emoji-quick.show { display: flex; }
-.status-emoji-quick span { font-size: 1.3rem; cursor: pointer; line-height: 1; }
+.status-emoji-quick span {
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+    display: inline-block;
+    transition: transform 0.3s var(--ease-bounce);
+}
+.status-emoji-quick span:active {
+    transform: scale(1.4) rotate(-10deg);
+}
 
 /* ===== STATE: IDLE (belum fokus) — cuma pill + love + share ===== */
 .status-reply-row #statusBtnCamera,
@@ -251,9 +283,11 @@
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
+    transition: transform 0.35s var(--ease-bounce);
 }
-.status-reply-row .status-reaction-btn svg { width: 22px; height: 22px; fill: #fff; transition: transform 0.15s, fill 0.15s; }
-.status-reply-row .status-reaction-btn.liked svg { fill: var(--soft-red); transform: scale(1.15); }
+.status-reply-row .status-reaction-btn:active { transform: scale(0.8); }
+.status-reply-row .status-reaction-btn svg { width: 22px; height: 22px; fill: #fff; transition: transform 0.4s var(--ease-bounce), fill 0.25s var(--ease-smooth); }
+.status-reply-row .status-reaction-btn.liked svg { fill: var(--soft-red); transform: scale(1.3); }
 
 /* ===== STATE: FOKUS, BELUM NGETIK — kamera-pill-galeri-stiker-kirim, love/share sembunyi ===== */
 .status-reply-row.is-focused #statusBtnCamera,
@@ -298,7 +332,9 @@
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
     cursor: pointer;
+    transition: transform 0.35s var(--ease-bounce);
 }
+.status-voice-del:active, .status-voice-send:active { transform: scale(0.82); }
 .status-voice-del { background: var(--soft-red); }
 .status-voice-del svg { width: 16px; height: 16px; fill: #fff; }
 .status-voice-send { background: #2f7cff; }

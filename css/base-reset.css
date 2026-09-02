@@ -45,6 +45,11 @@
             line-height: 1;
             color: var(--dark);
             cursor: pointer;
+            transition: transform 0.3s var(--ease-bounce), background 0.2s var(--ease-smooth);
+        }
+        .btn-close-notif:active {
+            transform: scale(0.8) rotate(90deg);
+            background: rgba(15,23,42,0.08);
         }
         .notif-page-card {
             background: var(--light); border: 1px solid var(--border); border-radius: 16px;
@@ -87,6 +92,12 @@
             --shadow-sm: 0 1px 3px rgba(15,23,42,0.08), 0 1px 2px rgba(15,23,42,0.04);
             --shadow-md: 0 4px 10px rgba(15,23,42,0.08), 0 2px 4px rgba(15,23,42,0.06);
             --shadow-lg: 0 10px 24px rgba(15,23,42,0.12), 0 4px 8px rgba(15,23,42,0.06);
+
+            /* ===== EASING ANIMASI (dipakai di semua elemen interaktif) ===== */
+            --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);   /* pop kecil, sedikit overshoot */
+            --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);      /* halus, tanpa overshoot */
+            --ease-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);  /* landing lembut */
+            --ease-snappy: cubic-bezier(0.16, 1, 0.3, 1);       /* cepat di awal, halus di akhir */
         }
 
         body {
@@ -231,6 +242,12 @@
             justify-content: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.1);
             cursor: pointer;
+            transition: transform 0.4s var(--ease-bounce), box-shadow 0.25s var(--ease-soft);
+        }
+
+        .notif-icon-btn:active {
+            transform: scale(0.86) rotate(-8deg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
         }
 
         .notif-icon-btn svg {
@@ -255,8 +272,10 @@
             z-index: 30;
             text-align: left;
             cursor: pointer;
-            animation: notifOverlayIn 0.25s ease;
+            animation: notifOverlayIn 0.4s var(--ease-bounce);
+            transition: transform 0.15s var(--ease-smooth);
         }
+        .notif-overlay-preview:active { transform: scale(0.96); }
         .notif-overlay-preview.show { display: block; }
         .notif-overlay-preview::before {
             content: '';
@@ -328,6 +347,11 @@
             justify-content: center;
             cursor: pointer;
             box-shadow: 0 3px 9px rgba(15,23,42,0.18);
+            transition: transform 0.35s var(--ease-bounce);
+        }
+
+        .btn-notif-product:active {
+            transform: scale(0.86) rotate(-8deg);
         }
 
         .btn-notif-product svg { width: 20px; height: 20px; fill: var(--dark); }
@@ -357,10 +381,14 @@
             justify-content: center;
             cursor: pointer;
             box-shadow: 0 3px 9px rgba(15,23,42,0.18);
-            transition: opacity 0.4s ease, transform 0.3s ease, visibility 0.4s;
+            transition: opacity 0.4s var(--ease-smooth), transform 0.35s var(--ease-bounce), visibility 0.4s;
             transform: translateY(0);
             opacity: 1;
             visibility: visible;
+        }
+
+        .btn-notif-payment:active {
+            transform: scale(0.86) rotate(-8deg);
         }
 
         .btn-notif-payment svg { width: 20px; height: 20px; fill: var(--dark); }
@@ -477,18 +505,19 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(15,23,42,0.18);
             border: 1px solid var(--border);
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.2s ease;
+            transition: transform 0.35s var(--ease-bounce), box-shadow 0.3s var(--ease-soft);
             cursor: pointer;
         }
 
         .product-card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px) scale(1.01);
             box-shadow: 0 10px 22px rgba(15,23,42,0.16);
         }
 
         .product-card:active {
-            transform: scale(0.97);
+            transform: scale(0.95) translateY(1px);
             box-shadow: 0 1px 6px rgba(15,23,42,0.18);
+            transition: transform 0.15s var(--ease-smooth), box-shadow 0.15s var(--ease-smooth);
         }
 
         .product-card img {

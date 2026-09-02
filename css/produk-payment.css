@@ -35,10 +35,14 @@
             color: var(--dark);
             cursor: pointer;
             box-shadow: 0 3px 9px rgba(15,23,42,0.18);
-            transition: opacity 0.4s ease, transform 0.3s ease, visibility 0.4s;
+            transition: opacity 0.4s var(--ease-smooth), transform 0.35s var(--ease-bounce), visibility 0.4s;
             transform: translateY(0);
             opacity: 1;
             visibility: visible;
+        }
+
+        .btn-back:active {
+            transform: scale(0.88) translateX(-2px);
         }
 
         .btn-back.hidden {
@@ -100,8 +104,12 @@
             border-radius: 50%;
             background: rgba(255,255,255,0.5);
             border: 2px solid rgba(0,0,0,0.3);
-            transition: background 0.3s, transform 0.2s;
+            transition: background 0.3s var(--ease-smooth), transform 0.4s var(--ease-bounce);
             cursor: pointer;
+        }
+
+        .slider-indicators span:active {
+            transform: scale(0.85);
         }
 
         .slider-indicators span.active {
@@ -289,12 +297,13 @@
             color: var(--dark);
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(15,23,42,0.15);
-            transition: all 0.15s;
+            transition: transform 0.35s var(--ease-bounce), box-shadow 0.25s var(--ease-soft), background 0.25s var(--ease-smooth), color 0.25s var(--ease-smooth);
             text-align: center;
         }
 
         .ig-followers-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.9);
+            transition: transform 0.12s var(--ease-smooth);
         }
 
         .ig-followers-btn.selected {
@@ -359,11 +368,12 @@
             border: 1px solid var(--border);
             scroll-snap-align: start;
             box-shadow: 0 4px 12px rgba(15,23,42,0.18);
-            transition: transform 0.15s;
+            transition: transform 0.35s var(--ease-bounce);
         }
 
         .gallery-scroll img:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
+            transition: transform 0.12s var(--ease-smooth);
         }
 
         /* ===== TOMBOL BELI SEKARANG - MERAH SOFT ===== */
@@ -389,7 +399,7 @@
             letter-spacing: 0.5px;
             box-shadow: 0 5px 15px rgba(15,23,42,0.18);
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+            transition: transform 0.35s var(--ease-bounce), box-shadow 0.3s var(--ease-soft), background 0.25s var(--ease-smooth);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -398,9 +408,10 @@
         }
 
         .btn-beli-fixed button:active {
-            transform: scale(0.97);
+            transform: scale(0.95) translateY(1px);
             box-shadow: 0 2px 6px rgba(15,23,42,0.18);
             background: #d65a5a;
+            transition: transform 0.12s var(--ease-smooth);
         }
 
         .btn-beli-fixed button span {
