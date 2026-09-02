@@ -77,6 +77,7 @@
         const data = products[1];
         const addon = data.addon;
         addonSelected = false;
+        window.__addonSelected = false;
         addonCard.classList.remove('selected');
         addonCardImg.src = addon.img;
         addonCardName.textContent = addon.name;
@@ -111,6 +112,7 @@
 
     addonCard.addEventListener('click', function() {
         addonSelected = !addonSelected;
+        window.__addonSelected = addonSelected;
         addonCard.classList.toggle('selected', addonSelected);
         const data = products[1];
         const addon = data.addon;
@@ -134,13 +136,13 @@
             qrisPriceText.textContent = addon.priceComboPayment;
             btnDownloadQris.href = addon.qrisCombo;
             const qrisAdminText = document.getElementById('qrisAdminText');
-            if (qrisAdminText) qrisAdminText.textContent = `${addon.adminFeeCombo}+ biaya admin`;
+            if (qrisAdminText) qrisAdminText.textContent = `biaya admin +${addon.adminFeeCombo}`;
         } else {
             paymentQrisImg.src = data.qris;
             qrisPriceText.textContent = data.pricePayment;
             btnDownloadQris.href = data.qris;
             const qrisAdminText = document.getElementById('qrisAdminText');
-            if (qrisAdminText) qrisAdminText.textContent = `${data.adminFee}+ biaya admin`;
+            if (qrisAdminText) qrisAdminText.textContent = `biaya admin +${data.adminFee}`;
         }
 
         addonSheetView.style.display = 'none';

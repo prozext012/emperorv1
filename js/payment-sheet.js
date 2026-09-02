@@ -108,8 +108,24 @@
 
         sheetOverlay.classList.add('active');
         paymentMethodSheet.classList.add('active');
+        const fabWaEl = document.getElementById('fabWa');
+        if (fabWaEl) fabWaEl.classList.add('hide-for-sheet');
 
         const data = products[currentProductId];
+
+        let adminFeeForMethod = 0;
+        if (data) {
+            if (data.type === 'instagram' || data.type === 'tiktok') {
+                adminFeeForMethod = 100; // biaya admin followers, sesuai perhitungan di firabase.js
+            } else if (currentProductId == 1 && data.addon && window.__addonSelected) {
+                adminFeeForMethod = data.addon.adminFeeCombo || 0;
+            } else {
+                adminFeeForMethod = data.adminFee || 0;
+            }
+        }
+        const methodQrisAdminText = document.getElementById('methodQrisAdminText');
+        if (methodQrisAdminText) methodQrisAdminText.textContent = 'admin +' + adminFeeForMethod;
+
         const slug = (data && (data.slug || data.key)) || currentProductId;
         const url = '/detail/' + encodeURIComponent(slug) + '/metode';
         const state = { page: 'method', productId: currentProductId };
@@ -124,6 +140,8 @@
     function closeMethodSheet() {
         sheetOverlay.classList.remove('active');
         paymentMethodSheet.classList.remove('active');
+        const fabWaEl = document.getElementById('fabWa');
+        if (fabWaEl) fabWaEl.classList.remove('hide-for-sheet');
     }
     window.closeMethodSheet = closeMethodSheet;
 

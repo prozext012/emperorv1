@@ -65,7 +65,7 @@
 
             const qrisAdminText = document.getElementById('qrisAdminText');
             if (qrisAdminText && data.adminFee) {
-                qrisAdminText.textContent = `${data.adminFee}+ biaya admin`;
+                qrisAdminText.textContent = `biaya admin +${data.adminFee}`;
             }
         }
 
