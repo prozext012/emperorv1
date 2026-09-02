@@ -34,19 +34,22 @@ function fsNum(field) {
     return 0;
 }
 
-async function fetchProductBySlug(slug) {
+// Sama persis dengan fungsi slugify di js/produk-grid.js, supaya slug yang
+// dicocokkan di sini selalu konsisten dengan slug yang dipakai untuk bikin
+// link produk di web utama.
+function slugify(str) {
+    return String(str || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
+async function fetchAllProducts() {
     const url = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:runQuery?key=${API_KEY}`;
     const body = {
         structuredQuery: {
-            from: [{ collectionId: 'products' }],
-            where: {
-                fieldFilter: {
-                    field: { fieldPath: 'key' },
-                    op: 'EQUAL',
-                    value: { stringValue: slug }
-                }
-            },
-            limit: 1
+            from: [{ collectionId: 'products' }]
         }
     };
     const resp = await fetch(url, {
@@ -59,11 +62,14 @@ async function fetchProductBySlug(slug) {
         },
         body: JSON.stringify(body)
     });
-    if (!resp.ok) return null;
+    if (!resp.ok) return [];
     const data = await resp.json();
-    const entry = Array.isArray(data) ? data.find(d => d.document) : null;
-    if (!entry) return null;
-    const fields = entry.document.fields || {};
+    if (!Array.isArray(data)) return [];
+    return data.filter(d => d.document).map(d => d.document);
+}
+
+function docToProduct(docEntry) {
+    const fields = docEntry.fields || {};
     const getStr = (f) => (fields[f] && fields[f].stringValue) || '';
     const getArr = (f) => {
         const av = fields[f] && fields[f].arrayValue && fields[f].arrayValue.values;
@@ -73,10 +79,11 @@ async function fetchProductBySlug(slug) {
     const type = getStr('type') || 'digital';
     const images = getArr('images');
     const gallery = getArr('gallery');
+    const key = getStr('key');
+    const name = getStr('name');
 
     let price = '';
     if (type === 'digital') {
-        const adminFee = fsNum(fields.adminFee);
         price = (getStr('priceMode') === 'coret')
             ? formatRp(fsNum(fields.priceSale))
             : formatRp(fsNum(fields.priceNormal));
@@ -86,10 +93,18 @@ async function fetchProductBySlug(slug) {
     }
 
     return {
-        name: getStr('name') || SITE_NAME,
+        // Slug produk: sama seperti di frontend, pakai key kalau ada, kalau tidak pakai name.
+        slug: slugify(key || name),
+        name: name || SITE_NAME,
         price,
         image: images[0] || gallery[0] || DEFAULT_IMAGE
     };
+}
+
+async function fetchProductBySlug(slug) {
+    const docs = await fetchAllProducts();
+    const products = docs.map(docToProduct);
+    return products.find(p => p.slug === slug) || null;
 }
 
 function buildBotHtml({ title, description, image, url }) {
