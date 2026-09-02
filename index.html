@@ -2,6 +2,45 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
+
+    <!-- ===== ANTI-KEDIP LINK PRODUK (/detail/...) ===== -->
+    <!-- Harus paling atas: jalan sebelum halaman utama sempat digambar sama sekali. -->
+    <script>
+    (function () {
+        window.__deepLinkReveal = function () {
+            document.documentElement.classList.remove('dl-loading');
+        };
+        if (/^\/detail\//.test(location.pathname)) {
+            document.documentElement.classList.add('dl-loading');
+            // Pengaman: kalau dalam 3 detik produknya tetap tidak ketemu
+            // (link salah/dihapus), tampilkan saja halaman utama biasa.
+            setTimeout(window.__deepLinkReveal, 3000);
+        }
+    })();
+    </script>
+    <style>
+        html.dl-loading #mainContainer { visibility: hidden; }
+        .dl-loader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: #0b0c10;
+            align-items: center;
+            justify-content: center;
+        }
+        html.dl-loading .dl-loader { display: flex; }
+        .dl-loader-spinner {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.15);
+            border-top-color: #25d366;
+            animation: dl-spin 0.7s linear infinite;
+        }
+        @keyframes dl-spin { to { transform: rotate(360deg); } }
+    </style>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#f4f6fb" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -18,17 +57,17 @@
     <meta property="og:site_name" content="Andika Store" />
     <meta property="og:title" content="Andika Store" />
     <meta property="og:description" content="Toko online resmi Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2.000+ ebook digital premium." />
-    <meta property="og:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" />
+    <meta property="og:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" />
     <meta property="og:url" content="https://dixz-vip.vercel.app/" />
 
     <!-- Twitter Card: preview link saat di-share ke X/Twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Andika Store" />
     <meta name="twitter:description" content="Toko online resmi Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2.000+ ebook digital premium." />
-    <meta name="twitter:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" />
+    <meta name="twitter:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" />
 
     <!-- Favicon (nilai awal, otomatis di-update lewat script mengikuti foto profil) -->
-    <link rel="icon" id="dynamicFavicon" href="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" type="image/jpeg" />
+    <link rel="icon" id="dynamicFavicon" href="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" type="image/jpeg" />
 
     <!-- Schema markup: bantu Google mengenali brand "Andika Store" / "dixz-vip" / "Andika" sebagai entitas yang sama -->
     <script type="application/ld+json">
@@ -63,6 +102,8 @@
     <link rel="stylesheet" href="/css/status-story.css" />
 </head>
 <body>
+
+<div class="dl-loader" id="dlLoader"><div class="dl-loader-spinner"></div></div>
 
 <div class="container" id="mainContainer">
 

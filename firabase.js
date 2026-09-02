@@ -624,6 +624,7 @@
         }
         window.__deepLinkHandled = true;
         window.openProduct(id, { pushUrl: false });
+        if (window.__deepLinkReveal) window.__deepLinkReveal();
         if (sub === 'tambahan' && window.openAddonSheet) {
             window.openAddonSheet({ pushUrl: false });
         } else if (sub === 'metode' && window.openMethodSheet) {
