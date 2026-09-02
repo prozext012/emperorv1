@@ -2,45 +2,6 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8" />
-
-    <!-- ===== ANTI-KEDIP LINK PRODUK (/detail/...) ===== -->
-    <!-- Harus paling atas: jalan sebelum halaman utama sempat digambar sama sekali. -->
-    <script>
-    (function () {
-        window.__deepLinkReveal = function () {
-            document.documentElement.classList.remove('dl-loading');
-        };
-        if (/^\/detail\//.test(location.pathname)) {
-            document.documentElement.classList.add('dl-loading');
-            // Pengaman: kalau dalam 3 detik produknya tetap tidak ketemu
-            // (link salah/dihapus), tampilkan saja halaman utama biasa.
-            setTimeout(window.__deepLinkReveal, 3000);
-        }
-    })();
-    </script>
-    <style>
-        html.dl-loading #mainContainer { visibility: hidden; }
-        .dl-loader {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 99999;
-            background: #0b0c10;
-            align-items: center;
-            justify-content: center;
-        }
-        html.dl-loading .dl-loader { display: flex; }
-        .dl-loader-spinner {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: #25d366;
-            animation: dl-spin 0.7s linear infinite;
-        }
-        @keyframes dl-spin { to { transform: rotate(360deg); } }
-    </style>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#f4f6fb" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -57,17 +18,17 @@
     <meta property="og:site_name" content="Andika Store" />
     <meta property="og:title" content="Andika Store" />
     <meta property="og:description" content="Toko online resmi Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2.000+ ebook digital premium." />
-    <meta property="og:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" />
+    <meta property="og:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" />
     <meta property="og:url" content="https://dixz-vip.vercel.app/" />
 
     <!-- Twitter Card: preview link saat di-share ke X/Twitter -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Andika Store" />
     <meta name="twitter:description" content="Toko online resmi Andika. Jual followers Instagram & TikTok murah, APK widget jam estetik, dan bundle 2.000+ ebook digital premium." />
-    <meta name="twitter:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" />
+    <meta name="twitter:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" />
 
     <!-- Favicon (nilai awal, otomatis di-update lewat script mengikuti foto profil) -->
-    <link rel="icon" id="dynamicFavicon" href="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" type="image/jpeg" />
+    <link rel="icon" id="dynamicFavicon" href="https://res.cloudinary.com/ywdax4aj/image/upload/v1787585940/ns8glapixpepn732afdy.jpg" type="image/jpeg" />
 
     <!-- Schema markup: bantu Google mengenali brand "Andika Store" / "dixz-vip" / "Andika" sebagai entitas yang sama -->
     <script type="application/ld+json">
@@ -102,8 +63,6 @@
     <link rel="stylesheet" href="/css/status-story.css" />
 </head>
 <body>
-
-<div class="dl-loader" id="dlLoader"><div class="dl-loader-spinner"></div></div>
 
 <div class="container" id="mainContainer">
 
@@ -227,14 +186,19 @@
         </div>
     </div>
 
-    <div class="payment-title">💳 Pembayaran</div>
+    <div class="payment-title">
+        <span class="payment-title-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/><rect x="5" y="14.2" width="5" height="1.8" rx="0.9" fill="#fff" opacity="0.85"/></svg>
+        </span>
+        Pembayaran
+    </div>
 
     <img class="payment-qris-img" id="paymentQrisImg" src="" alt="QRIS" />
 
     <div class="qris-price-box">
         <div class="qris-price-col">
             <span class="qris-price-text" id="qrisPriceText">Rp 0</span>
-            <span class="qris-admin-text" id="qrisAdminText">+ biaya admin</span>
+            <span class="qris-admin-text" id="qrisAdminText">biaya admin +0</span>
         </div>
         <a href="#" download="QRIS-DixzVip.jpg" id="btnDownloadQris" class="btn-download-qris">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11 4h2v7h3l-4 4-4-4h3V4zM5 18h14v2H5z"/></svg>
@@ -282,7 +246,10 @@
                 <div class="method-icon-circle">
                     <img src="https://i.ibb.co.com/RxcXkbR/19505ccf6392c16c5c320a50e8c2b745.jpg" alt="DANA" />
                 </div>
-                <span class="method-name">DANA</span>
+                <div class="method-info">
+                    <span class="method-name">DANA</span>
+                    <span class="method-admin-text">admin +0</span>
+                </div>
                 <span class="method-status">Segera Hadir</span>
             </div>
 
@@ -290,7 +257,10 @@
                 <div class="method-icon-circle">
                     <img src="https://i.ibb.co.com/FL1rmD7w/ca3bcfb0b9e22aface4fb684a733075e.jpg" alt="GoPay" />
                 </div>
-                <span class="method-name">GoPay</span>
+                <div class="method-info">
+                    <span class="method-name">GoPay</span>
+                    <span class="method-admin-text">admin +0</span>
+                </div>
                 <span class="method-status">Segera Hadir</span>
             </div>
 
@@ -298,7 +268,10 @@
                 <div class="method-icon-circle">
                     <img src="https://i.ibb.co.com/fdcCYJgd/b1a071a263b1ceb1ceadd4798d56f531.jpg" alt="OVO" />
                 </div>
-                <span class="method-name">OVO</span>
+                <div class="method-info">
+                    <span class="method-name">OVO</span>
+                    <span class="method-admin-text">admin +0</span>
+                </div>
                 <span class="method-status">Segera Hadir</span>
             </div>
 
@@ -306,7 +279,10 @@
                 <div class="method-icon-circle">
                     <img src="https://i.ibb.co.com/F4hYS9hG/sedang-1707756021-logo-qris.jpg" alt="QRIS" />
                 </div>
-                <span class="method-name">QRIS</span>
+                <div class="method-info">
+                    <span class="method-name">QRIS</span>
+                    <span class="method-admin-text" id="methodQrisAdminText">admin +0</span>
+                </div>
                 <span class="method-check" id="methodCheck">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z"/></svg>
                 </span>
