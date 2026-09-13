@@ -87,6 +87,16 @@
         setDoc(doc(db, 'productMeta', String(p.id)), p).catch(() => {});
     });
 
+    onSnapshot(doc(db, 'settings', 'antiDevtools'), (snap) => {
+        const data = snap.exists() ? snap.data() : {};
+        if (!window.ANTI_DEVTOOLS_CONFIG) return;
+        if (data.overlayTitle) window.ANTI_DEVTOOLS_CONFIG.overlayTitle = data.overlayTitle;
+        if (data.overlayMessage) window.ANTI_DEVTOOLS_CONFIG.overlayMessage = data.overlayMessage;
+        if (data.consoleWarningTitle) window.ANTI_DEVTOOLS_CONFIG.consoleWarningTitle = data.consoleWarningTitle;
+        if (data.consoleWarningMessage) window.ANTI_DEVTOOLS_CONFIG.consoleWarningMessage = data.consoleWarningMessage;
+        document.dispatchEvent(new Event('antidevtools-config-ready'));
+    });
+
     onSnapshot(doc(db, 'settings', 'status'), (snap) => {
         const online = snap.exists() ? (snap.data().online !== false) : true;
         const badge = document.querySelector('.online-badge');
