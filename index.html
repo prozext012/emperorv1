@@ -69,7 +69,7 @@
     <meta name="twitter:image" content="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" />
 
     <!-- Favicon (nilai awal, otomatis di-update lewat script mengikuti foto profil) -->
-    <link rel="icon" id="dynamicFavicon" href="https://res.cloudinary.com/ywdax4aj/image/upload/v1788316323/pfk7tllaanoyxcslt0tw.jpg" type="image/jpeg" />
+    <link rel="icon" href="/favicon.jpg" type="image/jpeg" />
 
     <!-- Schema markup: bantu Google mengenali brand "Andika Store" / "dixz-vip" / "Andika" sebagai entitas yang sama -->
     <script type="application/ld+json">
@@ -517,32 +517,6 @@
 <script src="/js/ig-close.js"></script>
 <script src="/js/status-init.js"></script>
 <script src="/js/status-viewer.js"></script>
-
-<!-- ===== FAVICON OTOMATIS (ikut foto profil) ===== -->
-<script>
-(function () {
-    const avatarImg = document.getElementById('profileAvatarImg');
-    const faviconLink = document.getElementById('dynamicFavicon');
-    if (!avatarImg || !faviconLink) return;
-
-    function syncFavicon() {
-        if (avatarImg.src) {
-            faviconLink.href = avatarImg.src;
-        }
-    }
-
-    // Set favicon pas pertama kali foto sudah termuat
-    if (avatarImg.complete) {
-        syncFavicon();
-    } else {
-        avatarImg.addEventListener('load', syncFavicon, { once: true });
-    }
-
-    // Pantau kalau src foto profil berubah (misal setelah update dari web admin)
-    const observer = new MutationObserver(syncFavicon);
-    observer.observe(avatarImg, { attributes: true, attributeFilter: ['src'] });
-})();
-</script>
 
 </body>
 </html>
