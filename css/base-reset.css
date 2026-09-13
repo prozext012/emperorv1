@@ -492,6 +492,56 @@
         }
 
 
+        /* ===== ANIMASI PEMBUKAAN HALAMAN (ENTRANCE) ===== */
+        @keyframes entranceFadeDown {
+            from { opacity: 0; transform: translateY(-18px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes entranceFadeUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.94); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes entranceFadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes entrancePopIn {
+            0%   { opacity: 0; transform: scale(0.7) rotate(-4deg); }
+            60%  { opacity: 1; transform: scale(1.05) rotate(1deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        .profile-card {
+            animation: entranceFadeDown 0.65s var(--ease-smooth) both;
+        }
+
+        .notif-ticker {
+            animation: entranceFadeIn 0.55s var(--ease-smooth) both;
+            animation-delay: 0.12s;
+        }
+
+        .product-grid .product-card {
+            animation: entranceFadeUp 0.55s var(--ease-bounce) backwards;
+        }
+        .product-grid .product-card:nth-child(1) { animation-delay: 0.10s; }
+        .product-grid .product-card:nth-child(2) { animation-delay: 0.16s; }
+        .product-grid .product-card:nth-child(3) { animation-delay: 0.22s; }
+        .product-grid .product-card:nth-child(4) { animation-delay: 0.28s; }
+        .product-grid .product-card:nth-child(5) { animation-delay: 0.34s; }
+        .product-grid .product-card:nth-child(6) { animation-delay: 0.40s; }
+        .product-grid .product-card:nth-child(n+7) { animation-delay: 0.46s; }
+
+        .avatar-ring {
+            animation: entrancePopIn 0.6s var(--ease-bounce) backwards;
+            animation-delay: 0.05s;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .profile-card, .notif-ticker, .product-grid .product-card, .avatar-ring {
+                animation: none !important;
+            }
+        }
+
         /* ===== GRID PRODUK 2 KOLOM ===== */
         .product-grid {
             display: grid;
