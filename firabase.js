@@ -2,9 +2,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, onSnapshot, query, orderBy, doc, setDoc, addDoc, updateDoc, arrayUnion, deleteDoc, getDocs, where, increment, writeBatch, limit } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-    // Upload gambar pakai ImgBB (pindah dari Cloudinary karena akun Cloudinary
-    // sering kena limit/gangguan). Video (kalau ada) tetap pakai Cloudinary.
-    const IMGBB_API_KEY = 'fb4cab6d50e0253e666ac90c4a586f6f';
+    const CLOUDINARY_CLOUD_NAME = 'ywdax4aj';
+    const CLOUDINARY_UPLOAD_PRESET = 'statusMedia';
     function resizeFileToDataUrl(file, maxWidth = 1000, quality = 0.75) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -33,29 +32,29 @@
         for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
         return new Blob([arr], { type: mime });
     }
-    async function uploadBlobToImgbb(blob) {
+    async function uploadBlobToCloudinary(blob) {
         const formData = new FormData();
-        formData.append('image', blob);
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        formData.append('file', blob);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
             method: 'POST',
             body: formData
         });
         if (!res.ok) {
-            let msg = 'Upload gambar ke ImgBB gagal.';
+            let msg = 'Upload gambar ke Cloudinary gagal.';
             try { const errData = await res.json(); if (errData.error && errData.error.message) msg = errData.error.message; } catch (e) {}
             throw new Error(msg);
         }
         const data = await res.json();
-        if (!data.success) throw new Error('Upload gambar ke ImgBB gagal.');
-        return data.data.url;
+        return data.secure_url;
     }
 
     async function uploadImageIfAny(file, maxWidth = 1000, quality = 0.75) {
         if (!file) return '';
         const dataUrl = await resizeFileToDataUrl(file, maxWidth, quality);
-        return uploadBlobToImgbb(dataUrlToBlob(dataUrl));
+        return uploadBlobToCloudinary(dataUrlToBlob(dataUrl));
     }
-    window.__uploadImageToImgbb = uploadImageIfAny;
+    window.__uploadImageToCloudinary = uploadImageIfAny;
 
     const firebaseConfig = {
         apiKey: "AIzaSyAYoOQXd-C8Nf11H1u1WJhjxBwchV7Uhwc",
