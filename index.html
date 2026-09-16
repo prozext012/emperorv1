@@ -3,42 +3,114 @@
 <head>
     <meta charset="UTF-8" />
 
-    <!-- ===== ANTI-KEDIP LINK PRODUK (/detail/...) ===== -->
-    <!-- Harus paling atas: jalan sebelum halaman utama sempat digambar sama sekali. -->
+    <!-- ===== ANTI-KEDIP HALAMAN PERTAMA DIBUKA ===== -->
+    <!-- Harus paling atas: jalan sebelum halaman utama sempat digambar sama sekali.
+         Berlaku untuk semua kunjungan (bukan cuma link produk), supaya banner/profil/
+         produk gak muncul kedip-kedip satu-satu; semuanya baru ditampilkan bareng
+         setelah datanya beneran siap (dikontrol dari firabase.js). -->
     <script>
     (function () {
-        window.__deepLinkReveal = function () {
-            document.documentElement.classList.remove('dl-loading');
+        document.documentElement.classList.add('page-loading');
+        window.__appReveal = function () {
+            document.documentElement.classList.remove('page-loading');
         };
-        if (/^\/detail\//.test(location.pathname)) {
-            document.documentElement.classList.add('dl-loading');
-            // Pengaman: kalau dalam 3 detik produknya tetap tidak ketemu
-            // (link salah/dihapus), tampilkan saja halaman utama biasa.
-            setTimeout(window.__deepLinkReveal, 3000);
-        }
+        // Pengaman: kalau dalam 5 detik data tetap belum siap (koneksi lambat/error),
+        // tampilkan saja apa adanya, jangan menggantung selamanya.
+        setTimeout(window.__appReveal, 5000);
     })();
     </script>
     <style>
-        html.dl-loading #mainContainer { visibility: hidden; }
-        .dl-loader {
+        html.page-loading #mainContainer { display: none; }
+        html.page-loading .fab-wa { display: none !important; }
+
+        .page-loader {
             display: none;
             position: fixed;
             inset: 0;
             z-index: 99999;
-            background: #0b0c10;
+            background: radial-gradient(circle at 50% 42%, #1c2230 0%, #0b0c10 72%);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        html.page-loading .page-loader { display: flex; }
+
+        .page-loader-orb {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            display: flex;
             align-items: center;
             justify-content: center;
         }
-        html.dl-loading .dl-loader { display: flex; }
-        .dl-loader-spinner {
-            width: 34px;
-            height: 34px;
+
+        .page-loader-ring {
+            position: absolute;
+            inset: 0;
             border-radius: 50%;
-            border: 3px solid rgba(255,255,255,0.15);
-            border-top-color: #25d366;
-            animation: dl-spin 0.7s linear infinite;
+            background: conic-gradient(from 0deg,
+                transparent 0deg,
+                rgba(255,255,255,0.06) 90deg,
+                rgba(255,255,255,0.9) 165deg,
+                rgba(255,255,255,0.06) 230deg,
+                transparent 360deg);
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+                    mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+            animation: page-ring-spin 1.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
         }
-        @keyframes dl-spin { to { transform: rotate(360deg); } }
+
+        .page-loader-halo {
+            position: absolute;
+            inset: -14px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.16) 0%, transparent 70%);
+            animation: page-halo-pulse 2.4s ease-in-out infinite;
+        }
+
+        .page-loader-logo {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+            padding: 9px;
+            box-sizing: border-box;
+            animation: page-logo-breathe 2.4s ease-in-out infinite;
+        }
+
+        .page-loader-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            animation: page-text-fade 2.4s ease-in-out infinite;
+        }
+
+        @keyframes page-ring-spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes page-halo-pulse {
+            0%, 100% { opacity: 0.35; transform: scale(0.92); }
+            50% { opacity: 0.7; transform: scale(1.08); }
+        }
+        @keyframes page-logo-breathe {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+            50% { transform: scale(1.07); filter: drop-shadow(0 0 16px rgba(255,255,255,0.4)); }
+        }
+        @keyframes page-text-fade {
+            0%, 100% { opacity: 0.35; letter-spacing: 3.5px; }
+            50% { opacity: 0.9; letter-spacing: 4.2px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .page-loader-ring, .page-loader-halo, .page-loader-logo, .page-loader-text {
+                animation: none !important;
+            }
+        }
     </style>
 
     <script src="/js/anti-devtools.js" defer></script>
@@ -105,7 +177,14 @@
 </head>
 <body>
 
-<div class="dl-loader" id="dlLoader"><div class="dl-loader-spinner"></div></div>
+<div class="page-loader" id="pageLoader">
+    <div class="page-loader-orb">
+        <div class="page-loader-halo"></div>
+        <div class="page-loader-ring"></div>
+        <img src="/favicon.jpg" alt="" class="page-loader-logo" />
+    </div>
+    <div class="page-loader-text">Andika Store</div>
+</div>
 
 <div class="container" id="mainContainer">
 

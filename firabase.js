@@ -107,6 +107,19 @@
         }
     });
 
+    // ===== ANTI-KEDIP: tunggu data profil & produk siap sebelum halaman ditampilkan =====
+    let __profileReady = false;
+    let __productsReady = false;
+    function maybeRevealApp() {
+        if (!__profileReady || !__productsReady) return;
+        // Kalau ini link /detail/... yang belum berhasil ketemu produknya, biarkan
+        // overlay tetap sampai checkDeepLinkProduct berhasil membuka produknya
+        // (atau sampai timeout pengaman di index.html jalan).
+        const isPendingDeepLink = /^\/detail\//.test(location.pathname) && !window.__deepLinkHandled;
+        if (isPendingDeepLink) return;
+        if (window.__appReveal) window.__appReveal();
+    }
+
     function applyProfileToDom(p) {
         if (!p) return;
         if (p.avatar) {
@@ -128,13 +141,16 @@
 
     try {
         const cachedProfile = localStorage.getItem('cachedProfile');
-        if (cachedProfile) applyProfileToDom(JSON.parse(cachedProfile));
+        if (cachedProfile) { applyProfileToDom(JSON.parse(cachedProfile)); __profileReady = true; maybeRevealApp(); }
     } catch (e) {}
     onSnapshot(doc(db, 'settings', 'profile'), (snap) => {
-        if (!snap.exists()) return;
-        const p = snap.data();
-        applyProfileToDom(p);
-        try { localStorage.setItem('cachedProfile', JSON.stringify(p)); } catch (e) {}
+        if (snap.exists()) {
+            const p = snap.data();
+            applyProfileToDom(p);
+            try { localStorage.setItem('cachedProfile', JSON.stringify(p)); } catch (e) {}
+        }
+        __profileReady = true;
+        maybeRevealApp();
     });
 
     try {
@@ -633,7 +649,7 @@
         }
         window.__deepLinkHandled = true;
         window.openProduct(id, { pushUrl: false });
-        if (window.__deepLinkReveal) window.__deepLinkReveal();
+        if (window.__appReveal) window.__appReveal();
         if (sub === 'tambahan' && window.openAddonSheet) {
             window.openAddonSheet({ pushUrl: false });
         } else if (sub === 'metode' && window.openMethodSheet) {
@@ -648,7 +664,9 @@
         if (cachedProducts && window.products) {
             Object.keys(cachedProducts).forEach(id => { window.products[id] = cachedProducts[id]; });
             if (window.renderProductGrid) window.renderProductGrid();
+            __productsReady = true;
             checkDeepLinkProduct();
+            maybeRevealApp();
         }
     } catch (e) {}
     onSnapshot(collection(db, 'products'), { includeMetadataChanges: true }, (snap) => {
@@ -730,5 +748,7 @@
             } catch (e) {}
         }
         if (changed && window.renderProductGrid) window.renderProductGrid();
+        __productsReady = true;
         checkDeepLinkProduct();
+        maybeRevealApp();
     });
